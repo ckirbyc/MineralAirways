@@ -1,0 +1,89 @@
+﻿@model PagedList.IPagedList<MineralAirways.Models.ReservasVuelos>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Manifiesto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Manifiesto</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Vuelos.NumeroVuelo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Vuelos.FechaHoraSalida)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Pasajeros.Rut)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Asientos.Descripcion)
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.Aviones.MatriculaDelAvion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Pasajeros.Rut)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tramos.TramoID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Vuelos.VueloID)
+        </th>*@
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Vuelos.NumeroVuelo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Vuelos.FechaHoraSalida)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Pasajeros.Rut)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Asientos.Descripcion)
+        </td>
+         @*<td>
+            @Html.DisplayFor(modelItem => item.Tramos.TramoID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ConfirmacionAsiento)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaHoraConfirmación)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaHoraCancelacion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Asientos.ColumnaAsiento)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Aviones.MatriculaDelAvion)
+        </td>*@        
+       
+        
+        @*<td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ReservaVueloID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ReservaVueloID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ReservaVueloID })
+        </td>*@
+    </tr>
+}
+
+</table>
+<br />
+Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Manifiesto",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

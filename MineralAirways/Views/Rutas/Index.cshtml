@@ -1,0 +1,79 @@
+﻿@model IEnumerable<MineralAirways.Models.Rutas>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<div class="row">
+    <div class="form-inline col-md-12">
+        <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("Create", "Rutas")">
+            <span class="glyphicon glyphicon-plus"></span>
+            Crear Ruta
+        </a>
+    </div>
+</div>
+<br />
+<div class="row">
+    <table class="table table-hover tablaMantenedores">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ciudad)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Region)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Codigo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ciudad)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Region)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Codigo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </th>
+                <th></th>
+            </tr>
+        </tfoot>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ciudad)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Region)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Codigo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descripcion)
+                    </td>
+                    <td>
+                        @Html.ActionLink(" ", "Edit", new { id = item.RutaID }, new { @class = "glyphicon glyphicon-edit", title = "Editar" }) |
+                        @Html.ActionLink(" ", "Details", new { id = item.RutaID }, new { @class = "glyphicon glyphicon-search", title = "Detalles" }) |
+                        @Html.ActionLink(" ", "Delete", new { id = item.RutaID }, new { @class = "glyphicon glyphicon-remove", title = "Eliminar" })
+                    </td>
+                </tr>
+            }
+        </tbody>        
+    </table>
+</div>
+<script src="~/Scripts/Tabla/ConfigTable.js"></script>

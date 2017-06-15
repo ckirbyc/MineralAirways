@@ -1,0 +1,790 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DAPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Asientos">
+          <Key>
+            <PropertyRef Name="AsientoID" />
+          </Key>
+          <Property Name="AsientoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AvionID" Type="int" Nullable="false" />
+          <Property Name="FilaAsiento" Type="int" Nullable="false" />
+          <Property Name="ColumnaAsiento" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Descripcion" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Tipo" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Aviones">
+          <Key>
+            <PropertyRef Name="AvionID" />
+          </Key>
+          <Property Name="AvionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MatriculaDelAvion" Type="nvarchar" MaxLength="50" />
+          <Property Name="Modelo" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Clientes">
+          <Key>
+            <PropertyRef Name="ClienteID" />
+          </Key>
+          <Property Name="ClienteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Rut" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Pasajeros">
+          <Key>
+            <PropertyRef Name="PasajeroID" />
+          </Key>
+          <Property Name="PasajeroID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Rut" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Nombres" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="PrimerApellido" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SegundoApellido" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cargo" Type="nvarchar" MaxLength="150" />
+          <Property Name="EMail" Type="nvarchar" MaxLength="50" />
+          <Property Name="AsientoAsignado" Type="nchar" MaxLength="10" />
+          <Property Name="EsEjecutivo" Type="bit" Nullable="false" />
+          <Property Name="ClienteID" Type="int" />
+          <Property Name="Pass" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TipoUsuario" Type="int" Nullable="false" />
+          <Property Name="PrimerLogeo" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReservasVuelos">
+          <Key>
+            <PropertyRef Name="ReservaVueloID" />
+          </Key>
+          <Property Name="ReservaVueloID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AvionID" Type="int" Nullable="false" />
+          <Property Name="TramoID" Type="int" Nullable="false" />
+          <Property Name="PasajeroID" Type="int" />
+          <Property Name="ConfirmacionAsiento" Type="bit" />
+          <Property Name="FechaHoraConfirmación" Type="datetime" />
+          <Property Name="FechaHoraCancelacion" Type="datetime" />
+          <Property Name="VueloID" Type="int" Nullable="false" />
+          <Property Name="AsientoID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Rutas">
+          <Key>
+            <PropertyRef Name="RutaID" />
+          </Key>
+          <Property Name="RutaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Ciudad" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Region" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Codigo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Descripcion" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Visible" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tramos">
+          <Key>
+            <PropertyRef Name="TramoID" />
+          </Key>
+          <Property Name="TramoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="VueloID" Type="int" Nullable="false" />
+          <Property Name="OrigenID" Type="int" Nullable="false" />
+          <Property Name="DestinoID" Type="int" Nullable="false" />
+          <Property Name="FechaHoraSalida" Type="datetime" Nullable="false" />
+          <Property Name="Visible" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Vuelos">
+          <Key>
+            <PropertyRef Name="VueloID" />
+          </Key>
+          <Property Name="VueloID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrigenID" Type="int" Nullable="false" />
+          <Property Name="DestinoID" Type="int" Nullable="false" />
+          <Property Name="FechaHoraSalida" Type="datetime" Nullable="false" />
+          <Property Name="NumeroVuelo" Type="int" Nullable="false" />
+          <Property Name="AvionID" Type="int" Nullable="false" />
+          <Property Name="Visible" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Asientos_Aviones">
+          <End Role="Aviones" Type="Self.Aviones" Multiplicity="1" />
+          <End Role="Asientos" Type="Self.Asientos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Aviones">
+              <PropertyRef Name="AvionID" />
+            </Principal>
+            <Dependent Role="Asientos">
+              <PropertyRef Name="AvionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pasajeros_Clientes">
+          <End Role="Clientes" Type="Self.Clientes" Multiplicity="0..1" />
+          <End Role="Pasajeros" Type="Self.Pasajeros" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="ClienteID" />
+            </Principal>
+            <Dependent Role="Pasajeros">
+              <PropertyRef Name="ClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Asientos">
+          <End Role="Asientos" Type="Self.Asientos" Multiplicity="1" />
+          <End Role="ReservasVuelos" Type="Self.ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Asientos">
+              <PropertyRef Name="AsientoID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="AsientoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Aviones">
+          <End Role="Aviones" Type="Self.Aviones" Multiplicity="1" />
+          <End Role="ReservasVuelos" Type="Self.ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Aviones">
+              <PropertyRef Name="AvionID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="AvionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Pasajeros">
+          <End Role="Pasajeros" Type="Self.Pasajeros" Multiplicity="0..1" />
+          <End Role="ReservasVuelos" Type="Self.ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pasajeros">
+              <PropertyRef Name="PasajeroID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="PasajeroID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Tramos">
+          <End Role="Tramos" Type="Self.Tramos" Multiplicity="1" />
+          <End Role="ReservasVuelos" Type="Self.ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tramos">
+              <PropertyRef Name="TramoID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="TramoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Vuelos">
+          <End Role="Vuelos" Type="Self.Vuelos" Multiplicity="1" />
+          <End Role="ReservasVuelos" Type="Self.ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vuelos">
+              <PropertyRef Name="VueloID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="VueloID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tramos_Rutas_Destino">
+          <End Role="Rutas" Type="Self.Rutas" Multiplicity="1" />
+          <End Role="Tramos" Type="Self.Tramos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rutas">
+              <PropertyRef Name="RutaID" />
+            </Principal>
+            <Dependent Role="Tramos">
+              <PropertyRef Name="DestinoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tramos_Rutas_Origen">
+          <End Role="Rutas" Type="Self.Rutas" Multiplicity="1" />
+          <End Role="Tramos" Type="Self.Tramos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rutas">
+              <PropertyRef Name="RutaID" />
+            </Principal>
+            <Dependent Role="Tramos">
+              <PropertyRef Name="OrigenID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tramos_Vuelos">
+          <End Role="Vuelos" Type="Self.Vuelos" Multiplicity="1" />
+          <End Role="Tramos" Type="Self.Tramos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vuelos">
+              <PropertyRef Name="VueloID" />
+            </Principal>
+            <Dependent Role="Tramos">
+              <PropertyRef Name="VueloID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vuelos_Aviones">
+          <End Role="Aviones" Type="Self.Aviones" Multiplicity="1" />
+          <End Role="Vuelos" Type="Self.Vuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Aviones">
+              <PropertyRef Name="AvionID" />
+            </Principal>
+            <Dependent Role="Vuelos">
+              <PropertyRef Name="AvionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vuelos_RutasDestino">
+          <End Role="Rutas" Type="Self.Rutas" Multiplicity="1" />
+          <End Role="Vuelos" Type="Self.Vuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rutas">
+              <PropertyRef Name="RutaID" />
+            </Principal>
+            <Dependent Role="Vuelos">
+              <PropertyRef Name="DestinoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vuelos_RutasOrigen">
+          <End Role="Rutas" Type="Self.Rutas" Multiplicity="1" />
+          <End Role="Vuelos" Type="Self.Vuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rutas">
+              <PropertyRef Name="RutaID" />
+            </Principal>
+            <Dependent Role="Vuelos">
+              <PropertyRef Name="OrigenID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DAPModelStoreContainer">
+          <EntitySet Name="Asientos" EntityType="Self.Asientos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Aviones" EntityType="Self.Aviones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Clientes" EntityType="Self.Clientes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pasajeros" EntityType="Self.Pasajeros" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReservasVuelos" EntityType="Self.ReservasVuelos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rutas" EntityType="Self.Rutas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tramos" EntityType="Self.Tramos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vuelos" EntityType="Self.Vuelos" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Asientos_Aviones" Association="Self.FK_Asientos_Aviones">
+            <End Role="Aviones" EntitySet="Aviones" />
+            <End Role="Asientos" EntitySet="Asientos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pasajeros_Clientes" Association="Self.FK_Pasajeros_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Pasajeros" EntitySet="Pasajeros" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Asientos" Association="Self.FK_ReservasVuelos_Asientos">
+            <End Role="Asientos" EntitySet="Asientos" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Aviones" Association="Self.FK_ReservasVuelos_Aviones">
+            <End Role="Aviones" EntitySet="Aviones" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Pasajeros" Association="Self.FK_ReservasVuelos_Pasajeros">
+            <End Role="Pasajeros" EntitySet="Pasajeros" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Tramos" Association="Self.FK_ReservasVuelos_Tramos">
+            <End Role="Tramos" EntitySet="Tramos" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Vuelos" Association="Self.FK_ReservasVuelos_Vuelos">
+            <End Role="Vuelos" EntitySet="Vuelos" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tramos_Rutas_Destino" Association="Self.FK_Tramos_Rutas_Destino">
+            <End Role="Rutas" EntitySet="Rutas" />
+            <End Role="Tramos" EntitySet="Tramos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tramos_Rutas_Origen" Association="Self.FK_Tramos_Rutas_Origen">
+            <End Role="Rutas" EntitySet="Rutas" />
+            <End Role="Tramos" EntitySet="Tramos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tramos_Vuelos" Association="Self.FK_Tramos_Vuelos">
+            <End Role="Vuelos" EntitySet="Vuelos" />
+            <End Role="Tramos" EntitySet="Tramos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vuelos_Aviones" Association="Self.FK_Vuelos_Aviones">
+            <End Role="Aviones" EntitySet="Aviones" />
+            <End Role="Vuelos" EntitySet="Vuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vuelos_RutasDestino" Association="Self.FK_Vuelos_RutasDestino">
+            <End Role="Rutas" EntitySet="Rutas" />
+            <End Role="Vuelos" EntitySet="Vuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vuelos_RutasOrigen" Association="Self.FK_Vuelos_RutasOrigen">
+            <End Role="Rutas" EntitySet="Rutas" />
+            <End Role="Vuelos" EntitySet="Vuelos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DAPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="DAPEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Asientos" EntityType="DAPModel.Asientos" />
+          <EntitySet Name="Aviones" EntityType="DAPModel.Aviones" />
+          <EntitySet Name="Clientes" EntityType="DAPModel.Clientes" />
+          <EntitySet Name="Pasajeros" EntityType="DAPModel.Pasajeros" />
+          <EntitySet Name="ReservasVuelos" EntityType="DAPModel.ReservasVuelos" />
+          <EntitySet Name="Rutas" EntityType="DAPModel.Rutas" />
+          <EntitySet Name="Tramos" EntityType="DAPModel.Tramos" />
+          <EntitySet Name="Vuelos" EntityType="DAPModel.Vuelos" />
+          <AssociationSet Name="FK_Asientos_Aviones" Association="DAPModel.FK_Asientos_Aviones">
+            <End Role="Aviones" EntitySet="Aviones" />
+            <End Role="Asientos" EntitySet="Asientos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Asientos" Association="DAPModel.FK_ReservasVuelos_Asientos">
+            <End Role="Asientos" EntitySet="Asientos" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Aviones" Association="DAPModel.FK_ReservasVuelos_Aviones">
+            <End Role="Aviones" EntitySet="Aviones" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vuelos_Aviones" Association="DAPModel.FK_Vuelos_Aviones">
+            <End Role="Aviones" EntitySet="Aviones" />
+            <End Role="Vuelos" EntitySet="Vuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pasajeros_Clientes" Association="DAPModel.FK_Pasajeros_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Pasajeros" EntitySet="Pasajeros" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Pasajeros" Association="DAPModel.FK_ReservasVuelos_Pasajeros">
+            <End Role="Pasajeros" EntitySet="Pasajeros" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Tramos" Association="DAPModel.FK_ReservasVuelos_Tramos">
+            <End Role="Tramos" EntitySet="Tramos" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservasVuelos_Vuelos" Association="DAPModel.FK_ReservasVuelos_Vuelos">
+            <End Role="Vuelos" EntitySet="Vuelos" />
+            <End Role="ReservasVuelos" EntitySet="ReservasVuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tramos_Rutas_Destino" Association="DAPModel.FK_Tramos_Rutas_Destino">
+            <End Role="Rutas" EntitySet="Rutas" />
+            <End Role="Tramos" EntitySet="Tramos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tramos_Rutas_Origen" Association="DAPModel.FK_Tramos_Rutas_Origen">
+            <End Role="Rutas" EntitySet="Rutas" />
+            <End Role="Tramos" EntitySet="Tramos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vuelos_RutasDestino" Association="DAPModel.FK_Vuelos_RutasDestino">
+            <End Role="Rutas" EntitySet="Rutas" />
+            <End Role="Vuelos" EntitySet="Vuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vuelos_RutasOrigen" Association="DAPModel.FK_Vuelos_RutasOrigen">
+            <End Role="Rutas" EntitySet="Rutas" />
+            <End Role="Vuelos" EntitySet="Vuelos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tramos_Vuelos" Association="DAPModel.FK_Tramos_Vuelos">
+            <End Role="Vuelos" EntitySet="Vuelos" />
+            <End Role="Tramos" EntitySet="Tramos" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Asientos">
+          <Key>
+            <PropertyRef Name="AsientoID" />
+          </Key>
+          <Property Name="AsientoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AvionID" Type="Int32" Nullable="false" />
+          <Property Name="FilaAsiento" Type="Int32" Nullable="false" />
+          <Property Name="ColumnaAsiento" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Tipo" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Aviones" Relationship="DAPModel.FK_Asientos_Aviones" FromRole="Asientos" ToRole="Aviones" />
+          <NavigationProperty Name="ReservasVuelos" Relationship="DAPModel.FK_ReservasVuelos_Asientos" FromRole="Asientos" ToRole="ReservasVuelos" />
+        </EntityType>
+        <EntityType Name="Aviones">
+          <Key>
+            <PropertyRef Name="AvionID" />
+          </Key>
+          <Property Name="AvionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MatriculaDelAvion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Modelo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Asientos" Relationship="DAPModel.FK_Asientos_Aviones" FromRole="Aviones" ToRole="Asientos" />
+          <NavigationProperty Name="ReservasVuelos" Relationship="DAPModel.FK_ReservasVuelos_Aviones" FromRole="Aviones" ToRole="ReservasVuelos" />
+          <NavigationProperty Name="Vuelos" Relationship="DAPModel.FK_Vuelos_Aviones" FromRole="Aviones" ToRole="Vuelos" />
+        </EntityType>
+        <EntityType Name="Clientes">
+          <Key>
+            <PropertyRef Name="ClienteID" />
+          </Key>
+          <Property Name="ClienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Rut" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Pasajeros" Relationship="DAPModel.FK_Pasajeros_Clientes" FromRole="Clientes" ToRole="Pasajeros" />
+        </EntityType>
+        <EntityType Name="Pasajeros">
+          <Key>
+            <PropertyRef Name="PasajeroID" />
+          </Key>
+          <Property Name="PasajeroID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Rut" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Nombres" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="PrimerApellido" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SegundoApellido" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cargo" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="EMail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AsientoAsignado" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="EsEjecutivo" Type="Boolean" Nullable="false" />
+          <Property Name="ClienteID" Type="Int32" />
+          <Property Name="Pass" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TipoUsuario" Type="Int32" Nullable="false" />
+          <Property Name="PrimerLogeo" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Clientes" Relationship="DAPModel.FK_Pasajeros_Clientes" FromRole="Pasajeros" ToRole="Clientes" />
+          <NavigationProperty Name="ReservasVuelos" Relationship="DAPModel.FK_ReservasVuelos_Pasajeros" FromRole="Pasajeros" ToRole="ReservasVuelos" />
+        </EntityType>
+        <EntityType Name="ReservasVuelos">
+          <Key>
+            <PropertyRef Name="ReservaVueloID" />
+          </Key>
+          <Property Name="ReservaVueloID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AvionID" Type="Int32" Nullable="false" />
+          <Property Name="TramoID" Type="Int32" Nullable="false" />
+          <Property Name="PasajeroID" Type="Int32" />
+          <Property Name="ConfirmacionAsiento" Type="Boolean" />
+          <Property Name="FechaHoraConfirmación" Type="DateTime" Precision="3" />
+          <Property Name="FechaHoraCancelacion" Type="DateTime" Precision="3" />
+          <Property Name="VueloID" Type="Int32" Nullable="false" />
+          <Property Name="AsientoID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Asientos" Relationship="DAPModel.FK_ReservasVuelos_Asientos" FromRole="ReservasVuelos" ToRole="Asientos" />
+          <NavigationProperty Name="Aviones" Relationship="DAPModel.FK_ReservasVuelos_Aviones" FromRole="ReservasVuelos" ToRole="Aviones" />
+          <NavigationProperty Name="Pasajeros" Relationship="DAPModel.FK_ReservasVuelos_Pasajeros" FromRole="ReservasVuelos" ToRole="Pasajeros" />
+          <NavigationProperty Name="Tramos" Relationship="DAPModel.FK_ReservasVuelos_Tramos" FromRole="ReservasVuelos" ToRole="Tramos" />
+          <NavigationProperty Name="Vuelos" Relationship="DAPModel.FK_ReservasVuelos_Vuelos" FromRole="ReservasVuelos" ToRole="Vuelos" />
+        </EntityType>
+        <EntityType Name="Rutas">
+          <Key>
+            <PropertyRef Name="RutaID" />
+          </Key>
+          <Property Name="RutaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Ciudad" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Region" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Codigo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Visible" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Tramos" Relationship="DAPModel.FK_Tramos_Rutas_Destino" FromRole="Rutas" ToRole="Tramos" />
+          <NavigationProperty Name="Tramos1" Relationship="DAPModel.FK_Tramos_Rutas_Origen" FromRole="Rutas" ToRole="Tramos" />
+          <NavigationProperty Name="Vuelos" Relationship="DAPModel.FK_Vuelos_RutasDestino" FromRole="Rutas" ToRole="Vuelos" />
+          <NavigationProperty Name="Vuelos1" Relationship="DAPModel.FK_Vuelos_RutasOrigen" FromRole="Rutas" ToRole="Vuelos" />
+        </EntityType>
+        <EntityType Name="Tramos">
+          <Key>
+            <PropertyRef Name="TramoID" />
+          </Key>
+          <Property Name="TramoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VueloID" Type="Int32" Nullable="false" />
+          <Property Name="OrigenID" Type="Int32" Nullable="false" />
+          <Property Name="DestinoID" Type="Int32" Nullable="false" />
+          <Property Name="FechaHoraSalida" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Visible" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ReservasVuelos" Relationship="DAPModel.FK_ReservasVuelos_Tramos" FromRole="Tramos" ToRole="ReservasVuelos" />
+          <NavigationProperty Name="Rutas" Relationship="DAPModel.FK_Tramos_Rutas_Destino" FromRole="Tramos" ToRole="Rutas" />
+          <NavigationProperty Name="Rutas1" Relationship="DAPModel.FK_Tramos_Rutas_Origen" FromRole="Tramos" ToRole="Rutas" />
+          <NavigationProperty Name="Vuelos" Relationship="DAPModel.FK_Tramos_Vuelos" FromRole="Tramos" ToRole="Vuelos" />
+        </EntityType>
+        <EntityType Name="Vuelos">
+          <Key>
+            <PropertyRef Name="VueloID" />
+          </Key>
+          <Property Name="VueloID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrigenID" Type="Int32" Nullable="false" />
+          <Property Name="DestinoID" Type="Int32" Nullable="false" />
+          <Property Name="FechaHoraSalida" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="NumeroVuelo" Type="Int32" Nullable="false" />
+          <Property Name="AvionID" Type="Int32" Nullable="false" />
+          <Property Name="Visible" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Aviones" Relationship="DAPModel.FK_Vuelos_Aviones" FromRole="Vuelos" ToRole="Aviones" />
+          <NavigationProperty Name="ReservasVuelos" Relationship="DAPModel.FK_ReservasVuelos_Vuelos" FromRole="Vuelos" ToRole="ReservasVuelos" />
+          <NavigationProperty Name="Rutas" Relationship="DAPModel.FK_Vuelos_RutasDestino" FromRole="Vuelos" ToRole="Rutas" />
+          <NavigationProperty Name="Rutas1" Relationship="DAPModel.FK_Vuelos_RutasOrigen" FromRole="Vuelos" ToRole="Rutas" />
+          <NavigationProperty Name="Tramos" Relationship="DAPModel.FK_Tramos_Vuelos" FromRole="Vuelos" ToRole="Tramos" />
+        </EntityType>
+        <Association Name="FK_Asientos_Aviones">
+          <End Type="DAPModel.Aviones" Role="Aviones" Multiplicity="1" />
+          <End Type="DAPModel.Asientos" Role="Asientos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Aviones">
+              <PropertyRef Name="AvionID" />
+            </Principal>
+            <Dependent Role="Asientos">
+              <PropertyRef Name="AvionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Asientos">
+          <End Type="DAPModel.Asientos" Role="Asientos" Multiplicity="1" />
+          <End Type="DAPModel.ReservasVuelos" Role="ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Asientos">
+              <PropertyRef Name="AsientoID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="AsientoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Aviones">
+          <End Type="DAPModel.Aviones" Role="Aviones" Multiplicity="1" />
+          <End Type="DAPModel.ReservasVuelos" Role="ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Aviones">
+              <PropertyRef Name="AvionID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="AvionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vuelos_Aviones">
+          <End Type="DAPModel.Aviones" Role="Aviones" Multiplicity="1" />
+          <End Type="DAPModel.Vuelos" Role="Vuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Aviones">
+              <PropertyRef Name="AvionID" />
+            </Principal>
+            <Dependent Role="Vuelos">
+              <PropertyRef Name="AvionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pasajeros_Clientes">
+          <End Type="DAPModel.Clientes" Role="Clientes" Multiplicity="0..1" />
+          <End Type="DAPModel.Pasajeros" Role="Pasajeros" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="ClienteID" />
+            </Principal>
+            <Dependent Role="Pasajeros">
+              <PropertyRef Name="ClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Pasajeros">
+          <End Type="DAPModel.Pasajeros" Role="Pasajeros" Multiplicity="0..1" />
+          <End Type="DAPModel.ReservasVuelos" Role="ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pasajeros">
+              <PropertyRef Name="PasajeroID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="PasajeroID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Tramos">
+          <End Type="DAPModel.Tramos" Role="Tramos" Multiplicity="1" />
+          <End Type="DAPModel.ReservasVuelos" Role="ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tramos">
+              <PropertyRef Name="TramoID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="TramoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservasVuelos_Vuelos">
+          <End Type="DAPModel.Vuelos" Role="Vuelos" Multiplicity="1" />
+          <End Type="DAPModel.ReservasVuelos" Role="ReservasVuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vuelos">
+              <PropertyRef Name="VueloID" />
+            </Principal>
+            <Dependent Role="ReservasVuelos">
+              <PropertyRef Name="VueloID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tramos_Rutas_Destino">
+          <End Type="DAPModel.Rutas" Role="Rutas" Multiplicity="1" />
+          <End Type="DAPModel.Tramos" Role="Tramos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rutas">
+              <PropertyRef Name="RutaID" />
+            </Principal>
+            <Dependent Role="Tramos">
+              <PropertyRef Name="DestinoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tramos_Rutas_Origen">
+          <End Type="DAPModel.Rutas" Role="Rutas" Multiplicity="1" />
+          <End Type="DAPModel.Tramos" Role="Tramos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rutas">
+              <PropertyRef Name="RutaID" />
+            </Principal>
+            <Dependent Role="Tramos">
+              <PropertyRef Name="OrigenID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vuelos_RutasDestino">
+          <End Type="DAPModel.Rutas" Role="Rutas" Multiplicity="1" />
+          <End Type="DAPModel.Vuelos" Role="Vuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rutas">
+              <PropertyRef Name="RutaID" />
+            </Principal>
+            <Dependent Role="Vuelos">
+              <PropertyRef Name="DestinoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vuelos_RutasOrigen">
+          <End Type="DAPModel.Rutas" Role="Rutas" Multiplicity="1" />
+          <End Type="DAPModel.Vuelos" Role="Vuelos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rutas">
+              <PropertyRef Name="RutaID" />
+            </Principal>
+            <Dependent Role="Vuelos">
+              <PropertyRef Name="OrigenID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tramos_Vuelos">
+          <End Type="DAPModel.Vuelos" Role="Vuelos" Multiplicity="1" />
+          <End Type="DAPModel.Tramos" Role="Tramos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vuelos">
+              <PropertyRef Name="VueloID" />
+            </Principal>
+            <Dependent Role="Tramos">
+              <PropertyRef Name="VueloID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DAPModelStoreContainer" CdmEntityContainer="DAPEntities">
+          <EntitySetMapping Name="Asientos">
+            <EntityTypeMapping TypeName="DAPModel.Asientos">
+              <MappingFragment StoreEntitySet="Asientos">
+                <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="ColumnaAsiento" ColumnName="ColumnaAsiento" />
+                <ScalarProperty Name="FilaAsiento" ColumnName="FilaAsiento" />
+                <ScalarProperty Name="AvionID" ColumnName="AvionID" />
+                <ScalarProperty Name="AsientoID" ColumnName="AsientoID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Aviones">
+            <EntityTypeMapping TypeName="DAPModel.Aviones">
+              <MappingFragment StoreEntitySet="Aviones">
+                <ScalarProperty Name="Modelo" ColumnName="Modelo" />
+                <ScalarProperty Name="MatriculaDelAvion" ColumnName="MatriculaDelAvion" />
+                <ScalarProperty Name="AvionID" ColumnName="AvionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clientes">
+            <EntityTypeMapping TypeName="DAPModel.Clientes">
+              <MappingFragment StoreEntitySet="Clientes">
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Rut" ColumnName="Rut" />
+                <ScalarProperty Name="ClienteID" ColumnName="ClienteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pasajeros">
+            <EntityTypeMapping TypeName="DAPModel.Pasajeros">
+              <MappingFragment StoreEntitySet="Pasajeros">
+                <ScalarProperty Name="PrimerLogeo" ColumnName="PrimerLogeo" />
+                <ScalarProperty Name="TipoUsuario" ColumnName="TipoUsuario" />
+                <ScalarProperty Name="Pass" ColumnName="Pass" />
+                <ScalarProperty Name="ClienteID" ColumnName="ClienteID" />
+                <ScalarProperty Name="EsEjecutivo" ColumnName="EsEjecutivo" />
+                <ScalarProperty Name="AsientoAsignado" ColumnName="AsientoAsignado" />
+                <ScalarProperty Name="EMail" ColumnName="EMail" />
+                <ScalarProperty Name="Cargo" ColumnName="Cargo" />
+                <ScalarProperty Name="SegundoApellido" ColumnName="SegundoApellido" />
+                <ScalarProperty Name="PrimerApellido" ColumnName="PrimerApellido" />
+                <ScalarProperty Name="Nombres" ColumnName="Nombres" />
+                <ScalarProperty Name="Rut" ColumnName="Rut" />
+                <ScalarProperty Name="PasajeroID" ColumnName="PasajeroID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReservasVuelos">
+            <EntityTypeMapping TypeName="DAPModel.ReservasVuelos">
+              <MappingFragment StoreEntitySet="ReservasVuelos">
+                <ScalarProperty Name="AsientoID" ColumnName="AsientoID" />
+                <ScalarProperty Name="VueloID" ColumnName="VueloID" />
+                <ScalarProperty Name="FechaHoraCancelacion" ColumnName="FechaHoraCancelacion" />
+                <ScalarProperty Name="FechaHoraConfirmación" ColumnName="FechaHoraConfirmación" />
+                <ScalarProperty Name="ConfirmacionAsiento" ColumnName="ConfirmacionAsiento" />
+                <ScalarProperty Name="PasajeroID" ColumnName="PasajeroID" />
+                <ScalarProperty Name="TramoID" ColumnName="TramoID" />
+                <ScalarProperty Name="AvionID" ColumnName="AvionID" />
+                <ScalarProperty Name="ReservaVueloID" ColumnName="ReservaVueloID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rutas">
+            <EntityTypeMapping TypeName="DAPModel.Rutas">
+              <MappingFragment StoreEntitySet="Rutas">
+                <ScalarProperty Name="Visible" ColumnName="Visible" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Ciudad" ColumnName="Ciudad" />
+                <ScalarProperty Name="RutaID" ColumnName="RutaID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tramos">
+            <EntityTypeMapping TypeName="DAPModel.Tramos">
+              <MappingFragment StoreEntitySet="Tramos">
+                <ScalarProperty Name="Visible" ColumnName="Visible" />
+                <ScalarProperty Name="FechaHoraSalida" ColumnName="FechaHoraSalida" />
+                <ScalarProperty Name="DestinoID" ColumnName="DestinoID" />
+                <ScalarProperty Name="OrigenID" ColumnName="OrigenID" />
+                <ScalarProperty Name="VueloID" ColumnName="VueloID" />
+                <ScalarProperty Name="TramoID" ColumnName="TramoID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Vuelos">
+            <EntityTypeMapping TypeName="DAPModel.Vuelos">
+              <MappingFragment StoreEntitySet="Vuelos">
+                <ScalarProperty Name="Visible" ColumnName="Visible" />
+                <ScalarProperty Name="AvionID" ColumnName="AvionID" />
+                <ScalarProperty Name="NumeroVuelo" ColumnName="NumeroVuelo" />
+                <ScalarProperty Name="FechaHoraSalida" ColumnName="FechaHoraSalida" />
+                <ScalarProperty Name="DestinoID" ColumnName="DestinoID" />
+                <ScalarProperty Name="OrigenID" ColumnName="OrigenID" />
+                <ScalarProperty Name="VueloID" ColumnName="VueloID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

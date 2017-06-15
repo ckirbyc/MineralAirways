@@ -1,0 +1,86 @@
+﻿@model MineralAirways.Models.ReservasVuelos
+
+@{
+    ViewBag.Title = "Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <h1 class="text-primary col-md-9">Eliminar Reserva Vuelo</h1>
+    <div class="form-inline col-md-3">
+        <br />
+        <a href="@Url.Action("Index","ReservasVuelos")" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;Volver</a>
+    </div>
+</div>
+
+<h3>¿Estás seguro que deseas eliminar esta reserva de vuelo?</h3>
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ConfirmacionAsiento)
+        </dt>
+    
+        <dd>
+            @Html.DisplayFor(model => model.ConfirmacionAsiento)
+        </dd>
+    
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaHoraConfirmación)
+        </dt>
+    
+        <dd>
+            @Html.DisplayFor(model => model.FechaHoraConfirmación)
+        </dd>
+    
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaHoraCancelacion)
+        </dt>
+    
+        <dd>
+            @Html.DisplayFor(model => model.FechaHoraCancelacion)
+        </dd>
+    
+        <dt>
+            @Html.DisplayNameFor(model => model.Asientos.ColumnaAsiento)
+        </dt>
+    
+        <dd>
+            @Html.DisplayFor(model => model.Asientos.ColumnaAsiento)
+        </dd>
+    
+        <dt>
+            @Html.DisplayNameFor(model => model.Aviones.MatriculaDelAvion)
+        </dt>
+    
+        <dd>
+            @Html.DisplayFor(model => model.Aviones.MatriculaDelAvion)
+        </dd>
+    
+        <dt>
+            @Html.DisplayNameFor(model => model.Pasajeros.Rut)
+        </dt>
+    
+        <dd>
+            @Html.DisplayFor(model => model.Pasajeros.Rut)
+        </dd>
+    
+        <dt>
+            @Html.DisplayNameFor(model => model.Vuelos.VueloID)
+        </dt>
+    
+        <dd>
+            @Html.DisplayFor(model => model.Vuelos.VueloID)
+        </dd>    
+    
+    </dl>
+    
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+    
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-default" />          
+        </div>
+    }
+</div>
+

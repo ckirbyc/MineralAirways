@@ -1,0 +1,82 @@
+﻿@model MineralAirways.Models.ReservaVueloFiltroPlanillaVm
+@{
+    ViewBag.Title = "Descargar Planilla Reservas de Vuelo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form id="form-exportar-excel">
+    <div class="row">
+        <h1 class="text-primary col-md-9">Descargar Planilla Manifiesto</h1>
+        <div class="form-inline col-md-3">
+            <br />
+            <a id="btnDescargar" class="btn btn-primary pull-right btn-sm" data-loading-text="Descargando espere por favor...">
+                <span class="glyphicon glyphicon-download"></span>
+                Descargar
+            </a>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.LabelFor(model => model.NumeroVuelo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.NumeroVuelo, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FechaHoraSalida, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.FechaHoraSalida, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group col-md-2">
+                <a id="btnLimpiar" class="btn btn-primary pull-left btn-sm">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    Limpiar
+                </a>
+            </div>
+                       
+            <div class="form-group col-md-10">                
+            </div>
+        </div>        
+    </div>
+</form>
+
+
+
+<script>
+    $('#FechaHoraSalida').datetimepicker({
+        format: 'DD-MM-YYYY HH:mm',
+        locale: 'es',
+        widgetPositioning: {
+            horizontal: 'auto',
+            vertical: 'bottom'
+        }
+    });
+
+    $(document).ready(function () {
+        $('#FechaHoraSalida').attr("class", "form-control datefield");
+
+        $("#btnDescargar").off('click').click(function () {
+            var $btn = $("#btnDescargar");
+            $btn.button('loading');
+            $("input").focus(function () {
+                $btn.button('reset');
+            });
+            var vuelo = $("#NumeroVuelo").val();
+            var fecha = $("#FechaHoraSalida").val();
+            window.location = '@Url.Action("ExportarExcel", "ReservasVuelos")?numeroVuelo=' + vuelo + '&fechaSalida=' + fecha;
+            setTimeout(function () {
+                $btn.button('reset');
+            }, 5000);
+        });
+
+        $("#btnLimpiar").off('click').click(function () {
+            $("#NumeroVuelo").val('');
+            $("#FechaHoraSalida").val('');
+        });
+    });
+</script>

@@ -1,0 +1,61 @@
+﻿@model MineralAirways.Models.Tramos
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <h1 class="text-primary col-md-9">Eliminar Escala</h1>
+    <div class="form-inline col-md-3">
+        <br />
+        <a href="@Url.Action("Index","Tramos")" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;Volver</a>
+    </div>
+</div>
+
+<h3>¿Estás seguro que deseas eliminar esta escala?</h3>
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaHoraSalida)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FechaHoraSalida)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Rutas.Ciudad)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rutas.Ciudad)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Rutas1.Ciudad)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rutas1.Ciudad)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Vuelos.VueloID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Vuelos.VueloID)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-default" />         
+        </div>
+    }
+</div>

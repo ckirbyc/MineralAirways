@@ -1,0 +1,156 @@
+﻿@using MineralAirways.Models;
+@model ReservaVueloFiltroViewModel
+@{
+    ViewBag.Title = "Inicio Logeado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var asientoAsignado = SessionViewModel.Usuario != null ? SessionViewModel.Usuario.AsientoAsignado.Trim() : string.Empty;
+    var fechaVueloArray = ViewBag.FechaVueloArray;
+}
+  
+<div class="row">
+    <h1 class="text-primary col-md-12">Sistema de Reservas de Vuelos Minera Collahuasi</h1>    
+</div>
+<br />
+<div class="container-fluid">
+    @*Sección selección origen*@
+    <section class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">     
+            <div class="btn-group">                              
+                <div class="dropdown">
+                    @Html.DropDownListFor(m => m.Origen, new SelectList(Model.OrigenSelectListItem, "Value", "Text", ""), "Seleccione Origen", new { @class = "btn btn-default dropdown-toggle" })
+                </div>
+            </div>
+        </div>        
+        <div class="col-md-4">
+        </div>
+    </section>
+    <br />
+    @*Sección selección destino*@
+    <section class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="btn-group">
+                <div class="dropdown">
+                    @Html.DropDownListFor(m => m.Destino, new SelectList(Model.DestinoSelectListItem, "Value", "Text", ""), "Seleccione Destino", new { @class = "btn btn-default dropdown-toggle" })
+                </div>                
+            </div>
+        </div>
+        <div class="col-md-4">
+        </div>
+    </section>
+    <br />
+    @*Sección de oporación con las fechas de los vuelos*@
+    <section class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4" id="datepicker"></div>
+        @*<div class="col-md-4">*@
+            @*<button id="BuscarBtn" type="button" class="btn btn-primary btn-sm">Buscar</button>*@
+        @*</div>*@
+    </section>    
+    <br />
+    <div id="SearchResults">
+    </div>
+</div>
+<script type="text/javascript">
+    var reservarVuelo = function (vueloId, origenSel, destinoSel) {
+        mostrarCarga();
+        $('#SearchResults').hide();
+        var url = '@Url.Action("ReservarVuelo", "HomeLogin")?vueloId=' + vueloId + '&origenSel=' + origenSel + '&destinoSel=' + destinoSel;
+        mostrarCarga();
+        window.location = url;
+        mostrarCarga();
+    };
+
+    var mostrarCarga = function () {        
+        setTimeout(function () {
+            $('#loading-modal').show();
+        }, 500);
+    };
+</script>
+<script>
+     $.datepicker.regional['es'] = {
+     closeText: 'Cerrar',
+     prevText: '< Ant',
+     nextText: 'Sig >',
+     currentText: 'Hoy',
+     monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+     monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+     dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+     dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+     dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+     weekHeader: 'Sm',
+     dateFormat: 'dd/mm/yy',
+     firstDay: 1,
+     isRTL: false,
+     showMonthAfterYear: false,
+     yearSuffix: '',
+     orientation: 'top left',
+     minDate: "+3D"
+     //maxDate: "+2M, -5D" 
+     };
+     $.datepicker.setDefaults($.datepicker.regional['es']);
+</script>
+<script>
+    var dato = '@fechaVueloArray';
+    var fechaSplit = dato.split(';');
+    var listaFecha = [];   
+
+    for (var i = 0; i < fechaSplit.length; i++)
+    {        
+        listaFecha.push(fechaSplit[i]);
+    }
+
+    function available(date) {
+        dmy = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+        var existeEnArreglo = $.inArray(dmy, listaFecha);
+
+        if (existeEnArreglo != -1) {            
+            return [true, "", "Available"];
+        } else {
+            return [false, "", "unAvailable"];
+        }
+    }
+
+    $("#datepicker").datepicker({
+        beforeShowDay: available,
+         onSelect: function (date) {
+             var origen = $("#Origen").val();
+                    var destino = $("#Destino").val();
+                    var fecha = $("#datepicker").val();
+                    
+                    if (origen == '') {
+                        BootstrapDialog.alert({
+                            title: '¡Validación!',
+                            message: '<strong>El Origen es requerido.</strong>',
+                            type: BootstrapDialog.TYPE_WARNING,
+                        });
+                    }
+                    else if (destino == '') {
+                        BootstrapDialog.alert({
+                            title: '¡Validación!',
+                            message: '<strong>El Destino es requerido.</strong>',
+                            type: BootstrapDialog.TYPE_WARNING,
+                        });                   
+                    }
+                    else if (origen == destino) {
+                        BootstrapDialog.alert({
+                            title: '¡Validación!',
+                            message: '<strong>El Origen no debe ser igual al Destino.</strong>',
+                            type: BootstrapDialog.TYPE_WARNING,
+                        });
+                    }
+                    else {
+                        var url = '@Url.Action("BusquedaVistaParcialReservaVuelo", "HomeLogin")?origen=' + origen + '&destino=' + destino + '&fecha=' + fecha;
+                        $('#SearchResults').load(url);
+                        setTimeout(function () {
+                            if ($('.container-fluid').html() != '') {
+                                $("#loading-modal").hide();
+                            }
+                        }, 10000);
+                    }
+             }
+         });
+</script>

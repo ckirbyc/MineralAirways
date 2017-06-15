@@ -1,0 +1,101 @@
+﻿@model IList<MineralAirways.Models.Pasajeros>
+@{
+    ViewBag.Title = "Pasajeros";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<div class="row">
+    <div class="col-md-10">
+        <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("Create", "Pasajeros")">
+            <span class="glyphicon glyphicon-plus"></span>
+            Crear Pasajero
+        </a>
+    </div>
+    <div class="col-md-1">                
+        <input type="button" value="Descargar" class="btn btn-primary pull-right btn-sm" id="btnDescargar" data-loading-text="Descargando espere por favor..." />
+    </div>
+    <div class="col-md-1">
+        @Html.ActionLink("Cargar", "CargarPlanilla", "Pasajeros", null, new { @class = "btn btn-primary pull-right btn-sm" })        
+    </div>        
+</div>
+<br />
+<div class="row">
+    <table class="table table-hover tablaMantenedores">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName("Rut")
+                </th>
+                <th>
+                    @Html.DisplayName("Nombres")
+                </th>                
+                <th>
+                    @Html.DisplayName("E-Mail")
+                </th>
+                <th>
+                    @Html.DisplayName("Asiento Asignado")
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>
+                    @Html.DisplayName("Rut")
+                </th>
+                <th>
+                    @Html.DisplayName("Nombres")
+                </th>
+                <th>
+                    @Html.DisplayName("E-Mail")
+                </th>
+                <th>
+                    @Html.DisplayName("Asiento Asignado")
+                </th>
+                <th></th>
+            </tr>
+        </tfoot>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rut)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombres)
+                        @Html.DisplayFor(modelItem => item.PrimerApellido)
+                        @Html.DisplayFor(modelItem => item.SegundoApellido)
+                    </td>                    
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EMail)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AsientoAsignado)
+                    </td>
+                    <td>
+                        @Html.ActionLink(" ", "Edit", new { id = item.PasajeroID }, new { @class = "glyphicon glyphicon-edit", title = "Editar" }) |
+                        @Html.ActionLink(" ", "Details", new { id = item.PasajeroID }, new { @class = "glyphicon glyphicon-search", title = "Detalles" }) |
+                        @Html.ActionLink(" ", "Delete", new { id = item.PasajeroID }, new { @class = "glyphicon glyphicon-remove", title = "Eliminar" })
+                    </td>
+                </tr>
+            }
+        </tbody>        
+    </table>
+</div>
+<script src="~/Scripts/Tabla/ConfigTable.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#btnDescargar").off('click').click(function () {
+            var $btn = $("#btnDescargar");
+            $btn.button('loading');
+            $("input").focus(function () {
+                $btn.button('reset');
+            });
+            window.location = '@Url.Action("ExportarExcel", "Pasajeros")';
+            setTimeout(function () {
+                $btn.button('reset');
+            }, 5000);
+        });
+    });
+</script>

@@ -1,0 +1,106 @@
+﻿@model MineralAirways.Models.ReservasVuelos
+
+@{
+    ViewBag.Title = "Editar Reserva Vuelos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <h1 class="text-primary col-md-9">Editar Reserva Vuelos</h1>
+    <div class="form-inline col-md-3">
+        <br />
+        <a href="@Url.Action("Index","ReservasVuelos")" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;Volver</a>
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+        
+    <div class="form-horizontal">        
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ReservaVueloID)
+    
+            
+    
+        <div class="form-group">
+            @Html.LabelFor(model => model.AvionID, "AvionID", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("AvionID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AvionID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    
+        <div class="form-group">
+            @Html.LabelFor(model => model.PasajeroID, "PasajeroID", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("PasajeroID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PasajeroID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConfirmacionAsiento, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.ConfirmacionAsiento)
+                    @Html.ValidationMessageFor(model => model.ConfirmacionAsiento, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaHoraConfirmación, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FechaHoraConfirmación, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FechaHoraConfirmación, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaHoraCancelacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FechaHoraCancelacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FechaHoraCancelacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    
+        <div class="form-group">
+            @Html.LabelFor(model => model.VueloID, "VueloID", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("VueloID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.VueloID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    
+        <div class="form-group">
+            @Html.LabelFor(model => model.AsientoID, "AsientoID", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("AsientoID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AsientoID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Guardar" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $('#FechaHoraConfirmaci_n,#FechaHoraCancelacion').datetimepicker({
+        format: 'DD-MM-YYYY hh:mm:ss',
+        locale: 'es',
+        widgetPositioning: {
+            horizontal: 'auto',
+            vertical: 'bottom'
+        }
+    });
+    $(document).ready(function () {
+        $('#FechaHoraConfirmaci_n,#FechaHoraCancelacion').attr("class", "form-control datefield");
+        $('#ConfirmacionAsiento').attr("class", "form-control list-box tri-state");
+    });
+</script>    
+    

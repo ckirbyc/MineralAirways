@@ -1,0 +1,37 @@
+﻿@model MineralAirways.Models.CargaArchivoVm
+@{
+    ViewBag.Title = "Cargar Planilla";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var error = (string)ViewData["errorExcel"];
+}
+
+@using (Html.BeginForm("ImportarExcel", "Pasajeros", FormMethod.Post, new { enctype = "multipart/form-data", @id = "form-importar-excel" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)    
+    <div class="row">
+        <h1 class="page-header col-md-12">Cargar Planilla Pasajeros</h1>         
+    </div>
+
+    <div class="row">        
+        @if (!string.IsNullOrEmpty(error))
+        {
+            <div class="alert alert-warning">
+                <p>@error</p>
+            </div>
+        }
+
+        <div class="col-md-12">
+            <label class="control-label">Seleccionar Archivo</label>
+            <input id="Archivo" name="Archivo" multiple type="file" class="file file-loading" data-allowed-file-extensions='["xls", "xlsx"]'>                        
+            @Html.ValidationMessageFor(model => model.Archivo)
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        $('#Archivo').fileinput({
+            language: 'es'            
+        });        
+    });
+</script>

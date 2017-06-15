@@ -1,0 +1,112 @@
+﻿@model MineralAirways.Models.Pasajeros
+
+@{
+    ViewBag.Title = "Detalle Pasajero";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <h1 class="text-primary col-md-9">Detalle del Pasajero</h1>
+    <br />
+    <div class="form-inline col-md-2">
+        <a href="@Url.Action("Edit","Pasajeros", new { id = Model.PasajeroID})" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-edit"></span>&nbsp;Editar Pasajero</a>
+    </div>
+    <div class="form-inline col-md-1">
+        <a href="@Url.Action("Index","Pasajeros")" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;Volver</a>
+    </div>
+</div>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Rut del Usuario
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rut)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombres)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nombres)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PrimerApellido)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PrimerApellido)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SegundoApellido)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SegundoApellido)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Cargo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cargo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EMail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EMail)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AsientoAsignado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AsientoAsignado)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EsEjecutivo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EsEjecutivo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Pass)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pass)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TipoUsuario)
+        </dt>
+
+        <dd>
+            @*@(model.TipoUsuario == 1 ? "Pasajero" : "Administrador")*@
+            @Html.DisplayFor(model => model.TipoUsuario)
+        </dd>
+
+        <dt>
+            Rut del Cliente
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Clientes.Rut)
+        </dd>
+
+    </dl>
+</div>

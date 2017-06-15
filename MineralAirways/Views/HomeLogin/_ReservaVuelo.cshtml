@@ -1,0 +1,52 @@
+﻿@using MineralAirways.Models;
+@model IEnumerable<Vuelos>
+@{
+    var NumeroAsiento = SessionViewModel.Usuario != null ? SessionViewModel.Usuario.AsientoAsignado.Trim() : string.Empty;
+    if (string.IsNullOrEmpty(NumeroAsiento)) {
+        NumeroAsiento = "Sin asiento asignado";
+    }
+    var destinoSel = ViewBag.DestinoSeleccionado;
+    var origenSel = ViewBag.OrigenSeleccionado;
+ }
+<div class="container-fluid">
+    @*Sección de detalle y reserva del vuelo*@
+
+    <section class="row">
+        <div class="table-responsive">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>Origen</th>                        
+                        <th>Destino</th>
+                        <th>Vuelo</th>
+                        <th>Fecha Salida</th>
+                        <th>Asiento</th>
+                        <th>Acción</th>
+                    </tr>                    
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var item1 = item;
+                        var origenTramo = item1.Tramos.FirstOrDefault(x => x.VueloID == item1.VueloID && x.OrigenID == origenSel);
+                        var destinoTramo = item1.Tramos.FirstOrDefault(x => x.VueloID == item1.VueloID && x.DestinoID == destinoSel);                        
+                        <tr>
+                            <td>@Html.DisplayFor(m => item1.Rutas1.Ciudad)</td>                            
+                            <td>@Html.DisplayFor(m => item1.Rutas.Ciudad)</td>                            
+                            <td>@Html.DisplayFor(m => item1.NumeroVuelo)</td>
+                            <td>@origenTramo.FechaHoraSalida</td>
+                            <td>@NumeroAsiento</td>
+                            <td>                                
+                                @*@Html.ActionLink("Reservar", "ReservarVuelo", "HomeLogin", new { vueloId = item1.VueloID, origenSel = origenTramo.OrigenID, destinoSel = destinoTramo.DestinoID }, new { @id="btnReservar", @class = "btn btn-primary btn-sm" })*@
+                                <a id="btnReservar" class="btn btn-primary btn-sm" href="javascript:reservarVuelo('@item1.VueloID', '@origenTramo.OrigenID', '@destinoTramo.DestinoID');">
+                                    Reservar
+                                </a>
+                            </td>                            
+                        </tr>
+                           }
+                </tbody>
+            </table>
+        </div>
+    </section>        
+    @*Sección de detalle tarjeta de embarque*@
+</div>

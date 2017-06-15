@@ -1,0 +1,98 @@
+﻿@model MineralAirways.Models.CambiarClaveVm
+@{
+    ViewBag.Title = "Cambiar Password";
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+<div class="row">
+    <h1 class="text-primary col-md-9">@ViewBag.Title</h1>
+    <div class="form-inline col-md-3">
+        <br />
+        <a href="@Url.Action("Login","Account")" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;Volver</a>
+    </div>
+</div>
+<br />
+@using (Html.BeginForm("CambiarClave", "Account", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.PasajeroId)
+    @Html.HiddenFor(model => model.ClaveActual)
+    <div class="row">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Clave Actual</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ClaveActual, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.ClaveActual, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Clave Nueva</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ClaveNueva, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ClaveNueva, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Repetir Clave Nueva</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ClaveNuevaReingreso, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ClaveNuevaReingreso, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input id="btnSubmit" type="button" value="Actualizar" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        $("#btnSubmit").on("click", function () {
+            var form = document.getElementsByTagName("form");
+            
+            var claveActual = $("#ClaveActual").val();
+            var claveNueva = $("#ClaveNueva").val();
+            var repetirClave = $("#ClaveNuevaReingreso").val();
+
+            if (claveNueva == repetirClave && claveActual != claveNueva) {
+                $(form).submit();
+            }
+            else if (claveNueva == repetirClave && claveActual == claveNueva) {
+                BootstrapDialog.show({
+                    title: '¡Validación!',
+                    message: '<strong>Clave Actual no debe ser idéntica a Clave Nueva. Favor intente nuevamente.</strong>',
+                    type: BootstrapDialog.TYPE_DANGER,
+                    buttons: [{
+                        label: 'Aceptar',
+                        cssClass: 'btn-default btn-sm',
+                        action: function (dialog) {
+                            dialog.close();
+                        }
+                    }]
+                });
+            }
+            else {
+                BootstrapDialog.show({
+                    title: '¡Validación!',
+                    message: '<strong>Ambas claves deben ser idénticas. Favor intente nuevamente.</strong>',
+                    type: BootstrapDialog.TYPE_DANGER,
+                    buttons: [{
+                        label: 'Aceptar',
+                        cssClass: 'btn-default btn-sm',
+                        action: function (dialog) {
+                            dialog.close();
+                        }
+                    }]
+                });
+            }
+        });
+    });
+</script>

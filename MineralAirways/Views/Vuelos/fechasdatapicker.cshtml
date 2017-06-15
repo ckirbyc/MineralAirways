@@ -1,0 +1,131 @@
+﻿@model IEnumerable<MineralAirways.Models.Vuelos>
+
+@{
+    ViewBag.Title = "fechasdatapicker";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>fechasdatapicker</h2>
+
+<section class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4" id="datepicker"></div>
+    @*<div class="col-md-4">*@
+    @*<button id="BuscarBtn" type="button" class="btn btn-primary btn-sm">Buscar</button>*@
+    @*</div>*@
+</section>
+<br />
+<div id="SearchResults">
+</div>
+
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    @*<tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaHoraSalida)
+        </th>
+        
+        <th></th>
+    </tr>*@
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+           @item.FechaHoraSalida.Day
+               
+        </td>
+        <td>
+            @item.OrigenID
+        </td>
+        <td>
+            @item.DestinoID
+        </td>       
+       
+    </tr>
+}
+
+</table>
+
+
+<script>
+ $.datepicker.regional['es'] = {
+ closeText: 'Cerrar',
+ prevText: '< Ant',
+ nextText: 'Sig >',
+ currentText: 'Hoy',
+ monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+ monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+ dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+ dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+ dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+ weekHeader: 'Sm',
+ dateFormat: 'dd/mm/yy',
+ firstDay: 1,
+ isRTL: false,
+ showMonthAfterYear: false,
+ yearSuffix: '',
+ orientation: 'top left',
+ minDate: "+0D",
+ maxDate: "+2M, -5D"
+ };
+ $.datepicker.setDefaults($.datepicker.regional['es']);
+</script>
+
+@*<script>
+     $("#datepicker").datepicker({
+         onSelect: function (date) {
+             var origen = $("#Origen").val();
+                    var destino = $("#Destino").val();
+                    var fecha = $("#datepicker").val();
+
+                    if (origen == '') {
+                        BootstrapDialog.alert({
+                            title: '¡Validación!',
+                            message: '<strong>El Origen es requerido.</strong>',
+                            type: BootstrapDialog.TYPE_WARNING,
+                        });
+                    }
+                    else if (destino == '') {
+                        BootstrapDialog.alert({
+                            title: '¡Validación!',
+                            message: '<strong>El Destino es requerido.</strong>',
+                            type: BootstrapDialog.TYPE_WARNING,
+                        });
+                    }
+                    else {
+                        var url = '@Url.Action("BusquedaVistaParcialReservaVuelo", "HomeLogin")?origen=' + origen + '&destino=' + destino + '&fecha=' + fecha;
+                        $('#SearchResults').load(url);
+                        setTimeout(function () {
+                            if ($('.container-fluid').html() != '') {
+                                $("#loading-modal").hide();
+                            }
+                        }, 10000);
+                    }
+             }
+         });
+</script>*@
+<script>
+
+ function noExcursion(date){
+     var day = date.getDay();
+     //var day;
+
+// aqui indicamos el numero correspondiente a los dias que ha de bloquearse (el 0 es Domingo, 1 Lunes, etc...)
+return [(day != 0 && day != 2 && day != 3 && day != 5 && day != 6), ''];
+};
+
+//Crear el datepicker
+$("#datepicker").datepicker({
+beforeShowDay: noExcursion,
+
+    //$('#datepicker').datepicker({
+    //    onSelect: function (dateText, inst) {
+    //        alert(dateText);
+
+    //   }
+
+});
+</script>

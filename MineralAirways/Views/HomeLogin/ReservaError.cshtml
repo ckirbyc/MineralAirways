@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "ReservaError";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var mensaje = ViewBag.Mensaje;
+    string tipoMensaje = ViewBag.TipoMensaje;
+    var claseMensaje = string.Empty;
+
+    if (tipoMensaje.Equals("D"))
+    {
+        claseMensaje = "alert alert-danger alert-dismissable";
+    }
+    else if (tipoMensaje.Equals("W")) {
+        claseMensaje = "alert alert-warning alert-dismissable";
+    }
+}
+
+<br />
+<div class="row">
+    <div class="@claseMensaje">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>@mensaje</strong>
+    </div>
+    <br />
+    <div class="col-md-12">
+        @Html.ActionLink("Volver", "Index", "HomeLogin", null, new { @class = "btn btn-primary btn-sm" })
+    </div>
+</div>
+<br />

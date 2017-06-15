@@ -1,0 +1,58 @@
+﻿@model IEnumerable<MineralAirways.Models.Tramos>
+
+@{
+    ViewBag.Title = "Escalas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="row">
+    <div class="form-inline col-md-12">
+        <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("Create", "Tramos")">
+            <span class="glyphicon glyphicon-plus"></span>
+            Crear Escala
+        </a>
+    </div>
+</div>
+<br />
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Vuelos.NumeroVuelo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaHoraSalida)
+        </th>
+        <th>
+           Origen
+        </th>
+        <th>
+            Destino
+        </th>        
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Vuelos.NumeroVuelo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaHoraSalida)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Rutas1.Ciudad)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Rutas.Ciudad)
+        </td>
+        
+        <td>
+            @Html.ActionLink(" ", "Edit", new { id = item.TramoID }, new { @class = "glyphicon glyphicon-edit", title = "Editar" }) |
+            @Html.ActionLink(" ", "Details", new { id = item.TramoID }, new { @class = "glyphicon glyphicon-search", title = "Detalles" }) |
+            @Html.ActionLink(" ", "Delete", new { id = item.TramoID }, new { @class = "glyphicon glyphicon-remove", title = "Eliminar" })
+        </td>
+    </tr>
+}
+
+</table>

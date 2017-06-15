@@ -1,0 +1,71 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/main.css" rel="stylesheet" />
+
+    <title>Login</title>
+</head>
+<div class="container">
+    <div class="row main">
+        <div class="panel-heading">
+            <div class="panel-title text-center">
+                <h1>Mineral Airways</h1>
+                <hr />
+            </div>
+        </div>
+
+        <div class="main-login main-center" id="loginForm">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @*<h4>Ingrese sus datos para iniciar sesión</h4>*@
+                <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @*@Html.LabelFor(m => m.RutUsuario, new { @class = "col-md-2 control-label" })*@
+                            <div@*class="col-xs-12 col-center col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4"*@>
+                                @Html.TextBoxFor(m => m.RutUsuario, new { @class = "form-control", @placeholder = "Ingrese su RUT" })
+                                @Html.ValidationMessageFor(m => m.RutUsuario, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @*@Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })*@
+                        <div @*class="col-xs-12 col-center col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4"*@>
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Ingrese su Password" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    @*<div class="form-group col-md-12 col-center">
+                            <div class="col-md-12 col-center">
+                                <div class="checkbox">
+                                    @Html.CheckBoxFor(m => m.RememberMe)
+                                    @Html.LabelFor(m => m.RememberMe)
+                                </div>
+                            </div>
+                        </div>*@
+                    <div class="form-group">
+                        <div @*class="col-xs-12 col-center col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4"*@>
+                            <input type="submit" value="Iniciar sesión" class="btn btn-default" />
+                        </div>
+                    </div>
+                        <div class="form-group">
+                            <div @*class="col-xs-12 col-center col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4"*@>
+                                @Html.ActionLink("¿Ha olvidado su contraseña?", "Account", "ForgotPassword")
+                            </div>
+                        </div>
+            }
+        </div>
+
+</div>
+
+    @section Scripts {
+        Scripts.Render("~/bundles/jqueryval")
+       @Scripts.Render("~/bundles/bootstrap")
+    }

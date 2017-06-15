@@ -1,0 +1,115 @@
+﻿@model IEnumerable<MineralAirways.Models.ReservasVuelos>
+
+@{
+    ViewBag.Title = "Reserva de Vuelo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="row">
+    @*<div class="col-md-10">
+        <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("Create", "ReservasVuelos")">
+            <span class="glyphicon glyphicon-plus"></span>
+            Crear Reserva Vuelo
+        </a>
+    </div>*@
+    <div class="col-md-2">    
+        <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("DescargarPlanilla", "ReservasVuelos")" onclick="$('#loading-modal').show();">
+            <span class="glyphicon glyphicon-file"></span>
+            Descargar Manifiesto
+        </a>                
+    </div>        
+</div>
+<br />
+<div class="row">
+    <table class="table table-hover tablaMantenedores">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName("Nombre del Pasajero")
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pasajeros.Rut)
+                </th>
+                <th>
+                    @Html.DisplayName("Asiento")                    
+                </th>
+                <th>
+                    @Html.DisplayName("Número del Vuelo")
+                </th>
+                <th>
+                    @Html.DisplayName("Fecha y Hora de Salida")
+                </th>
+                <th>
+                    @Html.DisplayName("Fecha y Hora de Confirmación")
+                </th>
+                <th>
+                    @Html.DisplayName("Fecha y Hora de Cancelación")
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>
+                    @Html.DisplayName("Nombre del Pasajero")
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pasajeros.Rut)
+                </th>
+                <th>
+                    @Html.DisplayName("Asiento")
+                </th>
+                <th>
+                    @Html.DisplayName("Número del Vuelo")
+                </th>
+                <th>
+                    @Html.DisplayName("Fecha y Hora de Salida")
+                </th>
+                <th>
+                    @Html.DisplayName("Fecha y Hora de Confirmación")
+                </th>
+                <th>
+                    @Html.DisplayName("Fecha y Hora de Cancelación")
+                </th>
+                <th></th>
+            </tr>
+        </tfoot>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pasajeros.Nombres)
+                        @Html.DisplayFor(modelItem => item.Pasajeros.PrimerApellido)
+                        @Html.DisplayFor(modelItem => item.Pasajeros.SegundoApellido)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pasajeros.Rut)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Asientos.Descripcion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Vuelos.NumeroVuelo)
+                    </td>
+                    <th>
+                        @Html.DisplayFor(model => item.Vuelos.FechaHoraSalida)
+                    </th>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaHoraConfirmación)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaHoraCancelacion)
+                    </td>
+                    <td>
+                        @*@Html.ActionLink(" ", "Edit", new { id = item.ReservaVueloID }, new { @class = "glyphicon glyphicon-edit", title = "Editar" }) |
+                    @Html.ActionLink(" ", "Details", new { id = item.ReservaVueloID }, new { @class = "glyphicon glyphicon-search", title = "Detalles" }) |*@
+                        @Html.ActionLink(" ", "Delete", new { id = item.ReservaVueloID }, new { @class = "glyphicon glyphicon-remove", title = "Eliminar" })
+                    </td>
+                </tr>
+            }
+        </tbody>        
+    </table>
+</div>
+<script src="~/Scripts/Tabla/ConfigTable.js"></script>

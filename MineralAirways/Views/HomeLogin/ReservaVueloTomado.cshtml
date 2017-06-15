@@ -1,0 +1,62 @@
+﻿@using MineralAirways.Models
+@model IEnumerable<VueloAsientoVm>
+@{
+    ViewBag.Title = "Reserva Vuelo Tomado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var destinoSel = ViewBag.DestinoSeleccionado;
+    var origenSel = ViewBag.OrigenSeleccionado;
+}
+
+<h2>Seleccionar Asiento</h2>
+<div class="container-fluid">
+    <section class="row">
+        <div class="table table-responsive">
+            @if (SessionViewModel.Usuario.EsEjecutivo)
+            {
+                <div class="alert alert-warning alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    @if (!string.IsNullOrEmpty(SessionViewModel.Usuario.AsientoAsignado.Trim()))
+                    {
+                        <strong>El asiento se encuentra reservado por otro pasajero, seleccione un asiento disponible</strong>
+                    }
+                    else
+                    {
+                        <strong>Seleccione un asiento disponible</strong>
+                    }
+                </div>
+            }                        
+            <table class="table table-hover tablaMantenedores">
+                <thead>
+                    <tr>                        
+                        <th>Asiento</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Asiento</th>
+                        <th>Acción</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var item in Model.OrderBy(x => x.Asiento))
+                    {
+                        var item1 = item;
+                        var origenTramo = item1.ListaTramos.FirstOrDefault(x => x.VueloID == item1.VueloId && x.OrigenID == origenSel);
+                        var destinoTramo = item1.ListaTramos.FirstOrDefault(x => x.VueloID == item1.VueloId && x.DestinoID == destinoSel);
+                        <tr>                            
+                            <td style="color:red;"><strong>@Html.DisplayFor(m => item1.Asiento)</strong></td>
+                            <td>@Html.ActionLink("Reservar", "ReservarVueloAsiento", "HomeLogin", new { vueloId = item1.VueloId, asientoId = item1.AsientoId, origenSel, destinoSel }, new { @class = "btn btn-primary btn-sm" })</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+<script src="~/Scripts/Tabla/ConfigTable.js"></script>
+<script>    
+    $(".btn-sm").off('click').click(function () {
+        $("#loading-modal").show();
+    });    
+</script>

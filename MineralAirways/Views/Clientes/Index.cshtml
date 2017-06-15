@@ -1,0 +1,45 @@
+﻿@model IEnumerable<MineralAirways.Models.Clientes>
+
+@{
+    ViewBag.Title = "Clientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<div class="row">
+    <div class="form-inline col-md-12">
+        <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("Create", "Clientes")">
+            <span class="glyphicon glyphicon-plus"></span>
+            Crear Cliente
+        </a>
+    </div>
+</div>
+<br />
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Rut)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Rut)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @Html.ActionLink(" ", "Edit", new { id = item.ClienteID }, new { @class = "glyphicon glyphicon-edit", title = "Editar" }) |
+            @Html.ActionLink(" ", "Details", new { id = item.ClienteID }, new { @class = "glyphicon glyphicon-search", title = "Detalles" }) |
+            @Html.ActionLink(" ", "Delete", new { id = item.ClienteID }, new { @class = "glyphicon glyphicon-remove", title = "Eliminar" })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNet.Identity
+@using MineralAirways.Models
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">        
+        <li>
+            @Html.ActionLink("Hola " + User.Identity.GetUserName() + "!", "EditPerfil", "PerfilPasajeros", new { id = SessionViewModel.Usuario.PasajeroID }, htmlAttributes: new { title = "Editar Perfíl" })
+        </li>       
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
+        @*<li><a href='#'><img src="~/img/mineral.png" class="navbar-brand"/></a></li>*@
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        @if (SessionViewModel.Usuario == null)
+        {
+            @*<li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>*@
+
+
+        }
+
+
+        else
+        {
+            if (SessionViewModel.Usuario.TipoUsuario == 1)
+            {
+                <li class="nav navbar-nav">@Html.ActionLink("Reservas", "Index", "HomeLogin", null, new { onclick = "$('#loading-modal').show();" })</li>
+                <li class="nav navbar-nav">@Html.ActionLink("Mis Reservas", "Details", "HomeLogin")</li>
+            }
+            else
+            {
+                <li class="nav navbar-nav">@Html.ActionLink("Reservas", "Index", "HomeLogin", null, new { onclick = "$('#loading-modal').show();" })</li>
+                <li class="nav navbar-nav">@Html.ActionLink("Rutas", "Index", "Rutas", null, new { onclick = "$('#loading-modal').show();" })</li>
+                <li class="nav navbar-nav">@Html.ActionLink("Vuelos", "Index", "Vuelos", null, new { onclick = "$('#loading-modal').show();" })</li>
+                @*<li class="nav navbar-nav">@Html.ActionLink("Escalas", "Index", "Tramos")</li>*@
+                @*<li class="nav navbar-nav">@Html.ActionLink("Clientes", "Index", "Clientes")</li>*@
+                <li class="nav navbar-nav">@Html.ActionLink("Pasajeros", "Index", "Pasajeros", null, new { onclick = "$('#loading-modal').show();" })</li>
+                <li class="nav navbar-nav">@Html.ActionLink("Reservas Vuelo", "Index", "ReservasVuelos", null, new { onclick = "$('#loading-modal').show();" })</li>
+
+
+            }            
+            <li>@Html.ActionLink("Hola " + SessionViewModel.Usuario.Nombre.ToString() + " " + SessionViewModel.Usuario.PrimerApellido.ToString() + "!", "EditPerfil", "PerfilPasajeros", new { id = SessionViewModel.Usuario.PasajeroID }, htmlAttributes: new { title = "Editar Perfíl", onclick = "$('#loading-modal').show();" })</li>
+            <li><a href="@Url.Action("Login", "Account")" onclick="$('#loading-modal').show();" title="Cerrar Sesión"><span class="glyphicon glyphicon-off"></span>&nbsp;Cerrar sesi&oacute;n</a></li>
+            @*<li><a><img src="~/img/mineral.png"/></a></li>*@
+        }
+    </ul>
+}

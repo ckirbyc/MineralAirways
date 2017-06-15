@@ -1,0 +1,106 @@
+﻿@using MineralAirways.Models
+@model IEnumerable<Vuelos>
+@{
+    ViewBag.Title = "Cambiar Vuelo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var asientoId = ViewBag.AsientoId;
+    var numeroAsiento = ViewBag.NumeroAsiento;
+    var reservaAntId = ViewBag.ReservaAntId;
+    var origenNombre = ViewBag.OrigenNombre;
+    var destinoNombre = ViewBag.DestinoNombre;
+    var numeroVuelo = ViewBag.NumeroVuelo;
+    var fechaVuelo = ViewBag.FechaHoraSalida;
+}
+
+<div class="row">
+    <h1 class="text-primary col-md-9">Cambiar Vuelo</h1>
+    <div class="form-inline col-md-3">
+        <br />
+        <a href="@Url.Action("Details","HomeLogin")" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;Volver</a>
+        <br />
+    </div>        
+</div>
+@if (!Model.Any())
+{
+    <div class="row">    
+            <div class="alert alert-warning alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>No existen otros vuelos de la misma fecha de salida para ser seleccionado.</strong>
+            </div> 
+    </div>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row">
+            <h3 class="text-primary col-md-12">Datos Vuelo Actual</h3>
+            <div class="table table-responsive">
+                <table class="table" border="1" style="border-color: inherit;">
+                    <thead>
+                        <tr>
+                            <th>Origen</th>
+                            <th>Destino</th>
+                            <th>Vuelo</th>
+                            <th>Fecha</th>
+                            <th>Asiento</th>                        
+                        </tr>
+                    </thead>
+                    <tbody>                        
+                        <tr>
+                            <td>@origenNombre</td>
+                            <td>@destinoNombre</td>
+                            <td>@numeroVuelo</td>
+                            <td>@fechaVuelo</td>
+                            <td style="color:red;"><strong>@numeroAsiento</strong></td>                            
+                        </tr>                        
+                    </tbody>
+                </table>
+            </div>
+            <h3 class="text-primary col-md-12">Seleccionar nuevo Vuelo</h3>
+            <div class="table table-responsive">
+                <table class="table table-hover tablaMantenedores">
+                    <thead>
+                        <tr>
+                            <th>Origen</th>                            
+                            <th>Destino</th>
+                            <th>Vuelo</th>
+                            <th>Fecha</th>
+                            <th>Asiento</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Origen</th>
+                            <th>Destino</th>
+                            <th>Vuelo</th>
+                            <th>Fecha</th>
+                            <th>Asiento</th>
+                            <th>Acción</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.OrderBy(x => x.FechaHoraSalida))
+                        {
+                            var item1 = item;                            
+                            <tr>                                
+                                <td>@item1.Rutas1.Ciudad</td>
+                                <td>@item1.Rutas.Ciudad</td>                                
+                                <td>@Html.DisplayFor(m => item1.NumeroVuelo)</td>
+                                <td>@Html.DisplayFor(m => item1.FechaHoraSalida)</td>
+                                <td style="color:red;"><strong>@numeroAsiento</strong></td>                                
+                                <td>@Html.ActionLink("Reservar", "ReservarVuelo", "HomeLogin", new { vueloId = item1.VueloID, origenSel = item1.OrigenID, destinoSel = item1.DestinoID, asientoStringId = asientoId, reservaAntId }, new { @id = "btnReservar", @class = "btn btn-primary btn-sm", onclick= "$('#loading-modal').show();" })</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+<script src="~/Scripts/Tabla/ConfigTable.js"></script>
+<script>    
+    $(".btn-sm").off('click').click(function () {
+        $("#loading-modal").show();
+    });    
+</script>

@@ -1,0 +1,88 @@
+﻿@model IEnumerable<MineralAirways.Models.Vuelos>
+
+@{
+    ViewBag.Title = "Vuelos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<div class="row">
+    <div class="form-inline col-md-12">
+        <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("Create", "Vuelos")">
+            <span class="glyphicon glyphicon-plus"></span>
+            Crear Vuelo
+        </a>
+    </div>
+</div>
+<br />
+<div class="row">
+    <table class="table table-hover tablaMantenedores">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaHoraSalida)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NumeroVuelo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Aviones.MatriculaDelAvion)
+                </th>
+                <th>
+                    Origen
+                </th>
+                <th>
+                    Destino
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FechaHoraSalida)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NumeroVuelo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Aviones.MatriculaDelAvion)
+                </th>
+                <th>
+                    Origen
+                </th>
+                <th>
+                    Destino
+                </th>
+                <th></th>
+            </tr>
+        </tfoot>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaHoraSalida)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumeroVuelo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Aviones.MatriculaDelAvion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rutas1.Codigo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rutas.Codigo)
+                    </td>
+                    <td>
+                        @Html.ActionLink(" ", "Edit", new { id = item.VueloID }, new { @class = "glyphicon glyphicon-edit", title = "Editar" }) |
+                        @Html.ActionLink(" ", "Details", new { id = item.VueloID }, new { @class = "glyphicon glyphicon-search", title = "Detalles" }) |
+                        @Html.ActionLink(" ", "Delete", new { id = item.VueloID }, new { @class = "glyphicon glyphicon-remove", title = "Eliminar" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script src="~/Scripts/Tabla/ConfigTable.js"></script>

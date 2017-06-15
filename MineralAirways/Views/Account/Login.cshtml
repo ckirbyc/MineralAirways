@@ -1,0 +1,102 @@
+﻿@using MineralAirways.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Iniciar sesión";
+    Layout = null;
+}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/ct-paper.css" rel="stylesheet" />
+    <link href="~/Content/main.css" rel="stylesheet" />
+    <link href="~/Content/mineral.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-dialog.min.css" rel="stylesheet" />
+    <title>Login</title>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/Scripts/jquery-ui.js")
+    @Scripts.Render("~/Scripts/jquery.validate.js")
+    @Scripts.Render("~/Scripts/bootstrap.js")
+    @Scripts.Render("~/Scripts/moment.js")
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker.js")
+    @Scripts.Render("~/Scripts/DatePickerReady.js")
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker.es.js")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/FuncionesGenerales.js")
+</head>
+<div class="wrapper">
+    <div class="register-background">
+        <div class="filter-black"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1 ">
+                    <div class="register-card">
+                        <h3 class="title">Bienvenido</h3>
+                        <section id="loginForm">
+                            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group"></div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(m => m.RutUsuario, new { @class = "form-control", @placeholder = "Ingrese su RUT" })
+                                    @Html.ValidationMessageFor(m => m.RutUsuario, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Ingrese su Password" })
+                                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Iniciar sesión" class="btn btn-danger btn-block" onclick="$('#loading-modal').show();" />
+                                </div>
+                                <div class="form-group">
+                                    <div id="btnRecuperar" class="forgot">
+                                        <a href="#" class="btn btn-danger">¿Recuperar su contraseña?</a>
+                                    </div>
+                                </div>
+                            }
+</section>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <div id="loading-modal"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#RutUsuario').on('blur', function () {
+            var rut = $("#RutUsuario").val();
+            if (rutValido(rut)) {
+                formateaRut(this, 'XXXXXXX-X');
+            }
+            else {
+                BootstrapDialog.show({
+                    title: '¡Validación!',
+                    message: '<strong>Rut Incorrecto</strong>',
+                    type: BootstrapDialog.TYPE_DANGER,
+                    buttons: [{
+                        label: 'Aceptar',
+                        cssClass: 'btn-default btn-sm',
+                        action: function (dialog) {
+                            dialog.close();
+                        }
+                    }]
+                });
+                $('#RutUsuario').focus();
+                $("#RutUsuario").val("");
+            }
+        });
+
+        $("#btnRecuperar").off('click').click(function () {
+            $("#loading-modal").show();
+            var url = '@Url.Action("ForgotPassword", "Account")?rut=' + $("#RutUsuario").val();
+            window.location = url;
+        });              
+    });
+</script>

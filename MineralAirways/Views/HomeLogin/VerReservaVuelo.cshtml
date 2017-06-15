@@ -1,0 +1,71 @@
+﻿@model MineralAirways.Models.ReservasVuelos
+@{
+    ViewBag.Title = "VerReservaVuelo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var nombrePasajero = Model.Pasajeros.Nombres + ' ' + Model.Pasajeros.PrimerApellido;
+    string scrImgQr = ViewBag.SrcImgQr;
+}
+
+<h2>Ver Reserva Vuelo</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td style="padding: 20px 0 30px 0;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
+                        <tr>
+                            <td align="center" bgcolor="#FFFFFF" style="padding: 25px 0 25px 0;">
+                                <img src="~/img/mineral.png" alt="SCP" width="40%" height="50" style="display: block;" />
+                                <div style="color: #151515; padding: 7px 10px; margin: 2px 2px 2px 2px; font-weight: bold; font-size: 17px!Important;font-family:Lucida Sans Unicode;">
+                                    Sistema Mineral Airways
+                                </div>
+                            </td>
+                            <td align="right" bgcolor="#FFFFFF" style="padding: 0 20px 50px 0;">
+                                <img src="@scrImgQr" alt="QR" style="width: 30%; height: 30%; display:block;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" style="padding: 40px 30px 10px 30px;" colspan="2">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td style="font-family: Arial,Helvetica,sans-serif; font-size: 18px; color: #666;">
+                                            Estimado: @nombrePasajero
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 20px 0 30px 0; font-family: Arial,Helvetica,sans-serif; font-size: 14px;color: #666;">
+                                            <p>Informamos que con fecha <strong>@Model.FechaHoraConfirmación</strong>, usted ha registrado exitosamente la reserva del vuelo, con los siguientes datos:</p>
+                                            <p><strong>Vuelo:</strong> @Model.Vuelos.NumeroVuelo</p>
+                                            <p><strong>Fecha Salida:</strong> @Model.Tramos.FechaHoraSalida.ToString("dd-MM-yyyy")</p>
+                                            <p><strong>Hora Salida:</strong> @Model.Tramos.FechaHoraSalida.ToString("HH:mm")</p>
+                                            <p><strong>Origen:</strong> @Model.Tramos.Rutas1.Ciudad</p>
+                                            <p><strong>Destino:</strong> @Model.Tramos.Rutas.Ciudad</p>
+                                            <p><strong>Asiento:</strong> @Model.Asientos.Descripcion</p>
+                                            <p><strong>Avión:</strong> @Model.Aviones.MatriculaDelAvion</p>
+                                            <p>En caso de tener observaciones comunicarse con el Administador del sitio SMA.</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#151515" style="padding: 7px 15px 7px 15px;" colspan="2">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td width="45%" align="left">
+                                            <a href="http://dapairline.com/">
+                                                <img src="~/img/Mineral_only.png" alt="MetLife" style="display: block; width: 95%; height: 40px;"   border="0" />
+                                            </a>
+                                        </td>                                        
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+

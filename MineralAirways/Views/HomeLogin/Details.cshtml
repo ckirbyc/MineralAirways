@@ -1,0 +1,71 @@
+﻿@model IEnumerable<MineralAirways.Models.ReservasVuelos>
+@{
+    ViewBag.Title = "Mis Reservas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<div class="row">
+    <h1 class="text-primary col-md-9">Mis Reservas</h1>
+    <div class="form-inline col-md-3">
+        @*<br />*@
+        <a href="@Url.Action("Index","HomeLogin")" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;Volver</a>
+        @*<br />*@
+    </div>
+</div>
+
+<div class="row">
+    <div class="container-fluid">
+        <section class="row">
+            <div class="table-responsive">
+                <table class="table table-hover tablaMantenedores">
+                    <thead>
+                        <tr>
+                            <th>Origen</th>                            
+                            <th>Destino</th>
+                            <th>Vuelo</th>
+                            <th>Asiento</th>
+                            <th>Fecha</th>
+                            <th>Reservas</th>
+                            <th>Ver</th>
+                            <th>Cambiar</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Origen</th>
+                            <th>Destino</th>
+                            <th>Vuelo</th>
+                            <th>Asiento</th>
+                            <th>Fecha</th>
+                            <th>Reservas</th>
+                            <th>Ver</th>
+                            <th>Cambiar</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model.OrderBy(x => x.Tramos.FechaHoraSalida))
+                        {
+                            var item1 = item;
+                            <tr>
+                                <td>@Html.DisplayFor(m => item1.Vuelos.Rutas1.Ciudad)</td>                                
+                                <td>@Html.DisplayFor(m => item1.Vuelos.Rutas.Ciudad)</td>
+                                <td>@Html.DisplayFor(m => item1.Vuelos.NumeroVuelo)</td>
+                                <td>@Html.DisplayFor(m => item1.Asientos.Descripcion)</td>
+                                <td>@Html.DisplayFor(m => item1.Tramos.FechaHoraSalida)</td>
+                                <td>@Html.ActionLink("Cancelar", "CancelarReservaVuelo", "HomeLogin", new { reservaId = item1.ReservaVueloID }, new { @class = "btn btn-danger btn-sm" })</td>
+                                <td>@Html.ActionLink("Ver", "VerReservaVuelo", "HomeLogin", new { reservaId = item1.ReservaVueloID }, new { @class = "btn btn-info btn-sm" })</td>
+                                <td>@Html.ActionLink("Vuelo", "CambiarVuelo", "HomeLogin", new { reservaId = item1.ReservaVueloID }, new { @class = "btn btn-success btn-sm" })</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+<script src="~/Scripts/Tabla/ConfigTable.js"></script>
+<script>    
+    $(".btn-sm").off('click').click(function () {
+        $("#loading-modal").show();
+    });    
+</script>

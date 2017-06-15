@@ -1,0 +1,70 @@
+﻿@model MineralAirways.Models.Vuelos
+
+@{
+    ViewBag.Title = "Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <h1 class="text-primary col-md-9">Eliminar Vuelo</h1>
+    <div class="form-inline col-md-3">
+        <br />
+        <a href="@Url.Action("Index","Vuelos")" class="btn btn-primary pull-right btn-sm"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;Volver</a>
+    </div>
+</div>
+
+<h3>¿Estás seguro que deseas eliminar este vuelo?</h3>
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaHoraSalida)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FechaHoraSalida)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumeroVuelo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumeroVuelo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Aviones.MatriculaDelAvion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Aviones.MatriculaDelAvion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Rutas.Ciudad)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rutas.Ciudad)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Rutas1.Ciudad)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rutas1.Ciudad)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-default" /> 
+            @*@Html.ActionLink("Back to List", "Index")*@
+        </div>
+    }
+</div>

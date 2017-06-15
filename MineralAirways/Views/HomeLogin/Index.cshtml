@@ -143,6 +143,7 @@
                         });
                     }
                     else {
+                        alert('Buscando....');
                         var url = '@Url.Action("BusquedaVistaParcialReservaVuelo", "HomeLogin")?origen=' + origen + '&destino=' + destino + '&fecha=' + fecha;
                         $('#SearchResults').load(url);
                         setTimeout(function () {

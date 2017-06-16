@@ -36,14 +36,13 @@
                             <td>@Html.DisplayFor(m => item1.NumeroVuelo)</td>
                             <td>@origenTramo.FechaHoraSalida</td>
                             <td>@NumeroAsiento</td>
-                            <td>                                
-                                @*@Html.ActionLink("Reservar", "ReservarVuelo", "HomeLogin", new { vueloId = item1.VueloID, origenSel = origenTramo.OrigenID, destinoSel = destinoTramo.DestinoID }, new { @id="btnReservar", @class = "btn btn-primary btn-sm" })*@
+                            <td>                                                               
                                 <a id="btnReservar" class="btn btn-primary btn-sm" href="javascript:reservarVuelo('@item1.VueloID', '@origenTramo.OrigenID', '@destinoTramo.DestinoID');">
                                     Reservar
                                 </a>
                             </td>                            
                         </tr>
-                           }
+                    }
                 </tbody>
             </table>
         </div>

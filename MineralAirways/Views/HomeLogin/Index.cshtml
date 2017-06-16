@@ -52,12 +52,13 @@
     </section>    
     <br />
     <div id="SearchResults">
-    </div>
+    </div>    
 </div>
 <script type="text/javascript">
     var reservarVuelo = function (vueloId, origenSel, destinoSel) {
-        mostrarCarga();
-        //$('#SearchResults').hide();
+        //mostrarCarga();        
+        $('#SearchResults').hide();
+        $('#loading-modal').show();
         var url = '@Url.Action("ReservarVuelo", "HomeLogin")?vueloId=' + vueloId + '&origenSel=' + origenSel + '&destinoSel=' + destinoSel;
         //mostrarCarga();
         window.location = url;
@@ -145,11 +146,11 @@
                     else {                        
                         var url = '@Url.Action("BusquedaVistaParcialReservaVuelo", "HomeLogin")?origen=' + origen + '&destino=' + destino + '&fecha=' + fecha;
                         $('#SearchResults').load(url);
-                        setTimeout(function () {
-                            if ($('.container-fluid').html() != '') {
-                                $("#loading-modal").hide();
-                            }
-                        }, 10000);
+                        //setTimeout(function () {
+                        //    if ($('.container-fluid').html() != '') {
+                        //        $("#loading-modal").hide();
+                        //    }
+                        //}, 10000);
                     }
              }
          });

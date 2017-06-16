@@ -57,11 +57,11 @@
 <script type="text/javascript">
     var reservarVuelo = function (vueloId, origenSel, destinoSel) {
         mostrarCarga();
-        $('#SearchResults').hide();
+        //$('#SearchResults').hide();
         var url = '@Url.Action("ReservarVuelo", "HomeLogin")?vueloId=' + vueloId + '&origenSel=' + origenSel + '&destinoSel=' + destinoSel;
-        mostrarCarga();
+        //mostrarCarga();
         window.location = url;
-        mostrarCarga();
+        //mostrarCarga();
     };
 
     var mostrarCarga = function () {        
@@ -142,8 +142,7 @@
                             type: BootstrapDialog.TYPE_WARNING,
                         });
                     }
-                    else {
-                        alert('Buscando....');
+                    else {                        
                         var url = '@Url.Action("BusquedaVistaParcialReservaVuelo", "HomeLogin")?origen=' + origen + '&destino=' + destino + '&fecha=' + fecha;
                         $('#SearchResults').load(url);
                         setTimeout(function () {

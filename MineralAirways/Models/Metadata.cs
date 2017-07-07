@@ -107,10 +107,10 @@ namespace MineralAirways.Models
             public object Rut { get; set; }
             public object Nombres { get; set; }
 
-            [Display(Name = "Apellido Materno")]
+            [Display(Name = "Apellido Paterno")]
             public object PrimerApellido { get; set; }
 
-            [Display(Name = "Apellido Paterno")]
+            [Display(Name = "Apellido Materno")]
             public object SegundoApellido { get; set; }
             public object Cargo { get; set; }
 

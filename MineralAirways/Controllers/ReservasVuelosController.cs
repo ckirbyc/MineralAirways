@@ -279,40 +279,45 @@ namespace MineralAirways.Controllers
             hojaReservasVuelo.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.Blue;
             hojaReservasVuelo.Cell(1, 1).Style.Font.Bold = true;
 
-            hojaReservasVuelo.Cell(1, 2).Value = "RUT (*)";
+            hojaReservasVuelo.Cell(1, 2).Value = "RUT";
             hojaReservasVuelo.Cell(1, 2).Style.Font.FontColor = XLColor.White;
             hojaReservasVuelo.Cell(1, 2).Style.Fill.BackgroundColor = XLColor.Blue;
             hojaReservasVuelo.Cell(1, 2).Style.Font.Bold = true;
 
-            hojaReservasVuelo.Cell(1, 3).Value = "Nombre del Pasajero(*)";
+            hojaReservasVuelo.Cell(1, 3).Value = "Cargo";
             hojaReservasVuelo.Cell(1, 3).Style.Font.FontColor = XLColor.White;
             hojaReservasVuelo.Cell(1, 3).Style.Fill.BackgroundColor = XLColor.Blue;
             hojaReservasVuelo.Cell(1, 3).Style.Font.Bold = true;
 
-            hojaReservasVuelo.Cell(1, 4).Value = "Asiento";
+            hojaReservasVuelo.Cell(1, 4).Value = "Nombre del Pasajero";
             hojaReservasVuelo.Cell(1, 4).Style.Font.FontColor = XLColor.White;
             hojaReservasVuelo.Cell(1, 4).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 4).Style.Font.Bold = true;                      
+            hojaReservasVuelo.Cell(1, 4).Style.Font.Bold = true;
 
-            hojaReservasVuelo.Cell(1, 5).Value = "Fecha y Hora de Salida";
+            hojaReservasVuelo.Cell(1, 5).Value = "Asiento";
             hojaReservasVuelo.Cell(1, 5).Style.Font.FontColor = XLColor.White;
             hojaReservasVuelo.Cell(1, 5).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 5).Style.Font.Bold = true;
+            hojaReservasVuelo.Cell(1, 5).Style.Font.Bold = true;                      
 
-            hojaReservasVuelo.Cell(1, 6).Value = "Número de Vuelo";
+            hojaReservasVuelo.Cell(1, 6).Value = "Fecha y Hora de Salida";
             hojaReservasVuelo.Cell(1, 6).Style.Font.FontColor = XLColor.White;
             hojaReservasVuelo.Cell(1, 6).Style.Fill.BackgroundColor = XLColor.Blue;
             hojaReservasVuelo.Cell(1, 6).Style.Font.Bold = true;
 
-            hojaReservasVuelo.Cell(1, 7).Value = "Vuelo";
+            hojaReservasVuelo.Cell(1, 7).Value = "Número de Vuelo";
             hojaReservasVuelo.Cell(1, 7).Style.Font.FontColor = XLColor.White;
             hojaReservasVuelo.Cell(1, 7).Style.Fill.BackgroundColor = XLColor.Blue;
             hojaReservasVuelo.Cell(1, 7).Style.Font.Bold = true;
 
-            hojaReservasVuelo.Cell(1, 8).Value = "Dirección";
+            hojaReservasVuelo.Cell(1, 8).Value = "Vuelo";
             hojaReservasVuelo.Cell(1, 8).Style.Font.FontColor = XLColor.White;
             hojaReservasVuelo.Cell(1, 8).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 8).Style.Font.Bold = true;   
+            hojaReservasVuelo.Cell(1, 8).Style.Font.Bold = true;
+
+            hojaReservasVuelo.Cell(1, 9).Value = "Dirección";
+            hojaReservasVuelo.Cell(1, 9).Style.Font.FontColor = XLColor.White;
+            hojaReservasVuelo.Cell(1, 9).Style.Fill.BackgroundColor = XLColor.Blue;
+            hojaReservasVuelo.Cell(1, 9).Style.Font.Bold = true;   
 
             using (var entity = new DAPEntities())
             {
@@ -332,24 +337,27 @@ namespace MineralAirways.Controllers
 
                     hojaReservasVuelo.Cell(fila, 2).DataType = XLCellValues.Text;
                     hojaReservasVuelo.Cell(fila, 2).Value = reserVItem.Pasajeros.Rut;
-                   
+
                     hojaReservasVuelo.Cell(fila, 3).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 3).Value = reserVItem.Pasajeros.PrimerApellido + " " + reserVItem.Pasajeros.SegundoApellido + ", " + reserVItem.Pasajeros.Nombres;
+                    hojaReservasVuelo.Cell(fila, 3).Value = reserVItem.Pasajeros.Cargo;
 
                     hojaReservasVuelo.Cell(fila, 4).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 4).Value = reserVItem.Asientos.Descripcion;
+                    hojaReservasVuelo.Cell(fila, 4).Value = reserVItem.Pasajeros.PrimerApellido + " " + reserVItem.Pasajeros.SegundoApellido + ", " + reserVItem.Pasajeros.Nombres;
 
                     hojaReservasVuelo.Cell(fila, 5).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 5).Value = reserVItem.Tramos.FechaHoraSalida;
+                    hojaReservasVuelo.Cell(fila, 5).Value = reserVItem.Asientos.Descripcion;
 
                     hojaReservasVuelo.Cell(fila, 6).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 6).Value = reserVItem.Vuelos.NumeroVuelo;
+                    hojaReservasVuelo.Cell(fila, 6).Value = reserVItem.Tramos.FechaHoraSalida;
 
                     hojaReservasVuelo.Cell(fila, 7).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 7).Value = reserVItem.Vuelos.Rutas1.Codigo+ "-" + reserVItem.Vuelos.Rutas.Codigo;
+                    hojaReservasVuelo.Cell(fila, 7).Value = reserVItem.Vuelos.NumeroVuelo;
 
                     hojaReservasVuelo.Cell(fila, 8).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 8).Value = reserVItem.Tramos.Rutas1.Ciudad + "-" + reserVItem.Tramos.Rutas.Ciudad;   
+                    hojaReservasVuelo.Cell(fila, 8).Value = reserVItem.Vuelos.Rutas1.Codigo+ "-" + reserVItem.Vuelos.Rutas.Codigo;
+
+                    hojaReservasVuelo.Cell(fila, 9).DataType = XLCellValues.Text;
+                    hojaReservasVuelo.Cell(fila, 9).Value = reserVItem.Tramos.Rutas1.Ciudad + "-" + reserVItem.Tramos.Rutas.Ciudad;   
                    
                     fila++;
                     contadorReg++;

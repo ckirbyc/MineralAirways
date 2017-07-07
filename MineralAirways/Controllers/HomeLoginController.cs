@@ -345,12 +345,14 @@ namespace MineralAirways.Controllers
             if (SessionViewModel.Usuario.EsEjecutivo)
             {
                 listaAsiento = entity.Asientos.Where(x => x.AvionID == vueloBd.AvionID
-                                            && x.FilaAsiento >= 1 && x.FilaAsiento <= 3).ToList();
+                                            && x.FilaAsiento >= 1 && x.FilaAsiento <= 3
+                                            && x.Tipo == 1).ToList();
             }
             else
             {
                 listaAsiento = entity.Asientos.Where(x => x.AvionID == vueloBd.AvionID
-                                            && x.FilaAsiento >= 4).ToList();
+                                            && x.FilaAsiento >= 4
+                                            && x.Tipo == 1).ToList();
             }
 
             var listaAsientoSinReserva = (from asiento in listaAsiento.ToList()
@@ -361,28 +363,31 @@ namespace MineralAirways.Controllers
                                           && ((x.Tramos.OrigenID >= origenSel
                                           && x.Tramos.DestinoID <= destinoSel)
                                           || (x.Tramos.OrigenID <= origenSel
-                                          && x.Tramos.DestinoID >= destinoSel)))
+                                          && x.Tramos.DestinoID >= destinoSel)))                                          
+                                          && asiento.Tipo == 1
                                           select asiento).ToList();
 
             var listaAsientoPreAsignado = entity.Pasajeros.Where(x => x.AsientoAsignado.Trim() != null && x.AsientoAsignado.Trim() != "").ToList();
 
             foreach (var asiento in listaAsientoSinReserva)
             {
-                if (!listaAsientoPreAsignado.Exists(x => x.AsientoAsignado.Trim() == asiento.Descripcion.Trim()))
-                {
-                    var vueloAsiento = new VueloAsientoVm
+                if (asiento.Tipo == 1) {
+                    if (!listaAsientoPreAsignado.Exists(x => x.AsientoAsignado.Trim() == asiento.Descripcion.Trim()))
                     {
-                        Destino = vueloBd.Rutas.Ciudad,
-                        Origen = vueloBd.Rutas1.Ciudad,
-                        FechaVuelo = vueloBd.FechaHoraSalida,
-                        NumeroVuelo = vueloBd.NumeroVuelo,
-                        VueloId = vueloBd.VueloID,
-                        Asiento = asiento.Descripcion,
-                        AsientoId = asiento.AsientoID,
-                        ListaTramos = vueloBd.Tramos.ToList()
-                    };
-                    listaVueloAsiento.Add(vueloAsiento);
-                }
+                        var vueloAsiento = new VueloAsientoVm
+                        {
+                            Destino = vueloBd.Rutas.Ciudad,
+                            Origen = vueloBd.Rutas1.Ciudad,
+                            FechaVuelo = vueloBd.FechaHoraSalida,
+                            NumeroVuelo = vueloBd.NumeroVuelo,
+                            VueloId = vueloBd.VueloID,
+                            Asiento = asiento.Descripcion,
+                            AsientoId = asiento.AsientoID,
+                            ListaTramos = vueloBd.Tramos.ToList()
+                        };
+                        listaVueloAsiento.Add(vueloAsiento);
+                    }
+                }                
             }
 
             ViewBag.OrigenSeleccionado = origenSel;

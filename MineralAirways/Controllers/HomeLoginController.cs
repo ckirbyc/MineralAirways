@@ -30,12 +30,12 @@ namespace MineralAirways.Controllers
                         
                 var format = "dd-MM-yyyy";
                 var fechaDate = DateTime.ParseExact(DateTime.Now.ToShortDateString(), format, CultureInfo.InvariantCulture);
-                var vueloBd = entity.Vuelos.Where(x => x.FechaHoraSalida >= fechaDate && x.Visible);
+                var vueloBd = entity.Vuelos.Where(x => x.FechaHoraSalida >= fechaDate && x.Visible == true);
 
                 var listaFecha = new StringBuilder(string.Empty);
 
                 var i = 0;
-                foreach (var fecha in vueloBd.ToList()) {
+                foreach (var fecha in vueloBd.OrderBy(x => x.FechaHoraSalida).ToList()) {
                     
                     var fechaFormato = string.Empty;
                     var dia = fecha.FechaHoraSalida.Day.ToString();
@@ -78,10 +78,19 @@ namespace MineralAirways.Controllers
         }
 
         public ActionResult BusquedaVistaParcialReservaVuelo(int origen, int destino, string fecha)
-        {                      
+        {
+            //Filtro por fecha
+            var format = "dd-MM-yyyy";
+            var fechaConFormato = fecha.Replace("/", "-");
+            var fechaDate = DateTime.ParseExact(fechaConFormato, format, CultureInfo.InvariantCulture);
+
             var entity = new DAPEntities();
             var vueloBd = (from vuelo in entity.Vuelos.ToList()
-                           where (!entity.ReservasVuelos.Any(f => f.VueloID == vuelo.VueloID
+                           where vuelo.Visible == true
+                           && vuelo.OrigenID == origen
+                           && vuelo.DestinoID == destino
+                           && DateTime.ParseExact(vuelo.FechaHoraSalida.ToShortDateString(), format, CultureInfo.InvariantCulture) == fechaDate
+                           && (!entity.ReservasVuelos.Any(f => f.VueloID == vuelo.VueloID
                            && f.ConfirmacionAsiento == true
                            && f.PasajeroID == SessionViewModel.Usuario.PasajeroID
                            && f.AvionID == vuelo.AvionID
@@ -96,14 +105,11 @@ namespace MineralAirways.Controllers
                            && t.DestinoID >= destino)))
                            select vuelo).ToList();           
 
-            //Filtro por fecha
-            var format = "dd-MM-yyyy";
-            var fechaConFormato = fecha.Replace("/", "-");
-            var fechaDate = DateTime.ParseExact(fechaConFormato, format, CultureInfo.InvariantCulture);
+            
 
-            var vueloFiltroBd = vueloBd.Where(x => DateTime.ParseExact(x.FechaHoraSalida.ToShortDateString(), format, CultureInfo.InvariantCulture) == fechaDate);
+            //var vueloFiltroBd = vueloBd.Where(x => DateTime.ParseExact(x.FechaHoraSalida.ToShortDateString(), format, CultureInfo.InvariantCulture) == fechaDate);
 
-            if (!vueloFiltroBd.Any())
+            if (!vueloBd.Any())
             {
                 var msg = new MensajeErrorVm
                 {
@@ -114,7 +120,7 @@ namespace MineralAirways.Controllers
             }
             else
             {
-                var datoVal = (from vuelo in vueloFiltroBd.ToList()
+                var datoVal = (from vuelo in vueloBd.ToList()
                                where (vuelo.OrigenID >= origen && vuelo.OrigenID <= origen)
                                && vuelo.Visible
                                && (vuelo.DestinoID >= destino && vuelo.DestinoID <= destino)

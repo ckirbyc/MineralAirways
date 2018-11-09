@@ -1,0 +1,135 @@
+﻿@model MineralAirways.Models.ReservaVueloFiltroPlanillaVm
+@{
+    ViewBag.Title = "Descargar Manifiesto de Cancelados";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form id="form-exportar-excel">
+    <div class="row">
+        <h1 class="text-primary col-md-9">Descargar Planilla Manifiesto Cancelados</h1>
+        <div class="form-inline col-md-3">
+            <br />
+            <a id="btnDescargar" class="btn btn-primary pull-right btn-sm" data-loading-text="Descargando espere por favor...">
+                <span class="glyphicon glyphicon-download"></span>
+                Descargar
+            </a>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.LabelFor(model => model.NumeroVuelo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.NumeroVuelo, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.FechaHoraInicio, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.FechaHoraInicio, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.FechaHoraFin, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.FechaHoraFin, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group col-md-2">
+                <a id="btnLimpiar" class="btn btn-primary pull-left btn-sm">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    Limpiar
+                </a>
+            </div>
+
+            <div class="form-group col-md-10">
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $('#FechaHoraInicio,#FechaHoraFin').datetimepicker({
+        format: 'DD-MM-YYYY HH:mm',
+        locale: 'es',
+        widgetPositioning: {
+            horizontal: 'auto',
+            vertical: 'bottom'
+        }
+    });
+
+    $(document).ready(function () {
+        $('#FechaHoraInicio,#FechaHoraFin').attr("class", "form-control datefield");
+
+        $("#btnDescargar").off('click').click(function () {
+            var $btn = $("#btnDescargar");
+            $btn.button('loading');
+            
+            var vuelo = $("#NumeroVuelo").val();
+            var fechaInicio = $("#FechaHoraInicio").val();
+            var fechaFin = $("#FechaHoraFin").val();
+
+            if (vuelo == '0' || vuelo == '') {
+                BootstrapDialog.alert({
+                    title: '¡Validación!',
+                    message: '<strong>Ingresar número de vuelo.</strong>',
+                    type: BootstrapDialog.TYPE_WARNING,
+                });
+                $btn.button('reset');
+                return;
+            }
+            else if (fechaInicio == '')
+            {
+                BootstrapDialog.alert({
+                    title: '¡Validación!',
+                    message: '<strong>Ingresar fecha de inicio.</strong>',
+                    type: BootstrapDialog.TYPE_WARNING,
+                });
+                $btn.button('reset');
+                return;
+            }
+            else if (fechaFin == '') {
+                BootstrapDialog.alert({
+                    title: '¡Validación!',
+                    message: '<strong>Ingresar fecha de fin.</strong>',
+                    type: BootstrapDialog.TYPE_WARNING,
+                });
+                $btn.button('reset');
+                return;
+            }
+            else if (fechaFin < fechaInicio) {
+                BootstrapDialog.alert({
+                    title: '¡Validación!',
+                    message: '<strong>Fecha fin debe ser mayor o igual a la fecha inicio de vuelos.</strong>',
+                    type: BootstrapDialog.TYPE_WARNING,
+                });
+                $btn.button('reset');
+                return;
+            }
+
+            monitorDescargaExcel();
+            window.location = '@Url.Action("ExportarExcelCancelado", "ReservasVuelos")?numeroVuelo=' + vuelo + '&fechaInicio=' + fechaInicio + '&fechaFin=' + fechaFin + '&processToken=' + @ViewBag.processToken;            
+        });
+
+        $("#btnLimpiar").off('click').click(function () {
+            $("#NumeroVuelo").val('');
+            $('#FechaHoraInicio,#FechaHoraFin').val('');
+        });        
+    });
+</script>
+<script>
+    function monitorDescargaExcel() {
+        $("#loading-modal").show();
+        var interval = setInterval(function () {
+            var cookieValue = $.cookie('processToken');            
+            if (cookieValue == '@ViewBag.processToken') {
+                $("#loading-modal").hide();
+                var $btn = $("#btnDescargar");
+                $btn.button('reset');                
+                clearInterval(interval);
+                $.removeCookie('processToken', { path: '/' });
+            }
+        }, 1000);
+    }
+</script>

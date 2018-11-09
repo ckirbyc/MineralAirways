@@ -11,7 +11,8 @@ namespace MineralAirways
                         "~/Scripts/jquery-{version}.js",                        
                         "~/Scripts/jquery-ui.js",
                         "~/Scripts/jquery.dataTables.min.js",
-                        "~/Scripts/dataTables.bootstrap.min.js"));
+                        "~/Scripts/dataTables.bootstrap.min.js",
+                        "~/Scripts/jquery.cookie.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));

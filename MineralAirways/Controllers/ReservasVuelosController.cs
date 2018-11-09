@@ -1,15 +1,14 @@
 ﻿using ClosedXML.Excel;
 using MineralAirways.Models;
-using PagedList;
 using System;
 using System.Data;
 using System.Data.Entity;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
-using System.IO;
-using System.Configuration;
-using System.Globalization;
 
 namespace MineralAirways.Controllers
 {
@@ -85,6 +84,7 @@ namespace MineralAirways.Controllers
             ViewBag.CancelacionVueloSortParm = sortOrder == "FechaCancelacion" ? "fechacancelacionvuelo_desc" : "FechaCancelacion";
             var reservasvuelos = from s in db.ReservasVuelos.Include(r => r.Asientos).Include(r => r.Aviones).Include(r => r.Pasajeros).Include(r => r.Vuelos)
                                  select s;
+            
             switch (sortOrder)
             {
                 case "name_desc":
@@ -238,13 +238,17 @@ namespace MineralAirways.Controllers
 
         public ActionResult DescargarPlanilla()
         {
+            ViewBag.processToken = Convert.ToInt64(DateTime.Now.Hour.ToString() + DateTime.Now.Minute + DateTime.Now.Second +
+                                       DateTime.Now.Millisecond);
             return View(new ReservaVueloFiltroPlanillaVm { FechaHoraSalida = DateTime.Now });
         }
 
-        public FileStreamResult ExportarExcel(int? numeroVuelo, string fechaSalida)
+        public FileStreamResult ExportarExcel(int? numeroVuelo, string fechaSalida, long processToken)
         {
             try
             {
+                MakeProcessTokenCookie(processToken);
+
                 DateTime? fechaDate = new DateTime();
                 if (!string.IsNullOrEmpty(fechaSalida)) {
                     var format = "dd-MM-yyyy HH:mm";
@@ -254,6 +258,12 @@ namespace MineralAirways.Controllers
                 var libro = ExportarArchivoExcel(numeroVuelo, fechaDate.ToString() == "01-01-0001 0:00:00" ? null : fechaDate);
                 var memoryStream = new MemoryStream();
                 libro.SaveAs(memoryStream);
+                libro.Dispose();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
                 memoryStream.Flush();
                 memoryStream.Position = 0;
 
@@ -268,108 +278,267 @@ namespace MineralAirways.Controllers
 
         private XLWorkbook ExportarArchivoExcel(int? numeroVuelo, DateTime? fechaSalida = null)
         {
-            var workbook = new XLWorkbook();
-            var hojaReservasVuelo = workbook.Worksheets.Add("Datos ReservasVuelos");
-            var hojaParam = workbook.Worksheets.Add("Parametros").Hide();
-            
-            hojaParam.Columns().AdjustToContents();
-
-            hojaReservasVuelo.Cell(1, 1).Value = "N°";
-            hojaReservasVuelo.Cell(1, 1).Style.Font.FontColor = XLColor.White;
-            hojaReservasVuelo.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 1).Style.Font.Bold = true;
-
-            hojaReservasVuelo.Cell(1, 2).Value = "RUT";
-            hojaReservasVuelo.Cell(1, 2).Style.Font.FontColor = XLColor.White;
-            hojaReservasVuelo.Cell(1, 2).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 2).Style.Font.Bold = true;
-
-            hojaReservasVuelo.Cell(1, 3).Value = "Cargo";
-            hojaReservasVuelo.Cell(1, 3).Style.Font.FontColor = XLColor.White;
-            hojaReservasVuelo.Cell(1, 3).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 3).Style.Font.Bold = true;
-
-            hojaReservasVuelo.Cell(1, 4).Value = "Nombre del Pasajero";
-            hojaReservasVuelo.Cell(1, 4).Style.Font.FontColor = XLColor.White;
-            hojaReservasVuelo.Cell(1, 4).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 4).Style.Font.Bold = true;
-
-            hojaReservasVuelo.Cell(1, 5).Value = "Asiento";
-            hojaReservasVuelo.Cell(1, 5).Style.Font.FontColor = XLColor.White;
-            hojaReservasVuelo.Cell(1, 5).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 5).Style.Font.Bold = true;                      
-
-            hojaReservasVuelo.Cell(1, 6).Value = "Fecha y Hora de Salida";
-            hojaReservasVuelo.Cell(1, 6).Style.Font.FontColor = XLColor.White;
-            hojaReservasVuelo.Cell(1, 6).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 6).Style.Font.Bold = true;
-
-            hojaReservasVuelo.Cell(1, 7).Value = "Número de Vuelo";
-            hojaReservasVuelo.Cell(1, 7).Style.Font.FontColor = XLColor.White;
-            hojaReservasVuelo.Cell(1, 7).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 7).Style.Font.Bold = true;
-
-            hojaReservasVuelo.Cell(1, 8).Value = "Vuelo";
-            hojaReservasVuelo.Cell(1, 8).Style.Font.FontColor = XLColor.White;
-            hojaReservasVuelo.Cell(1, 8).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 8).Style.Font.Bold = true;
-
-            hojaReservasVuelo.Cell(1, 9).Value = "Dirección";
-            hojaReservasVuelo.Cell(1, 9).Style.Font.FontColor = XLColor.White;
-            hojaReservasVuelo.Cell(1, 9).Style.Fill.BackgroundColor = XLColor.Blue;
-            hojaReservasVuelo.Cell(1, 9).Style.Font.Bold = true;   
-
-            using (var entity = new DAPEntities())
+            using (var workbook = new XLWorkbook(XLEventTracking.Disabled))
             {
-                numeroVuelo = numeroVuelo == 0 ? null : numeroVuelo;
+                using (var hojaReservasVuelo = workbook.Worksheets.Add("Datos ReservasVuelos"))
+                {
+                    //var hojaParam = workbook.Worksheets.Add("Parametros").Hide();
+                    //hojaParam.Columns().AdjustToContents();
 
-                var reservasvuelosBd = entity.ReservasVuelos.Where(r => r.ConfirmacionAsiento == true
-                && (numeroVuelo == null || r.Vuelos.NumeroVuelo == numeroVuelo)
-                && (fechaSalida == null || r.Vuelos.FechaHoraSalida == fechaSalida)
-                ).ToList();
-                
-                var fila = 2;
-                var contadorReg = 1;
-                foreach (ReservasVuelos reserVItem in reservasvuelosBd.OrderBy(x => x.Pasajeros.PrimerApellido))
-                {                    
-                    hojaReservasVuelo.Cell(fila, 1).DataType = XLCellValues.Number;
-                    hojaReservasVuelo.Cell(fila, 1).Value = contadorReg;
+                    hojaReservasVuelo.Cell(1, 1).Value = "N°";
+                    hojaReservasVuelo.Cell(1, 1).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 1).Style.Font.Bold = true;
 
-                    hojaReservasVuelo.Cell(fila, 2).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 2).Value = reserVItem.Pasajeros.Rut;
+                    hojaReservasVuelo.Cell(1, 2).Value = "RUT";
+                    hojaReservasVuelo.Cell(1, 2).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 2).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 2).Style.Font.Bold = true;
 
-                    hojaReservasVuelo.Cell(fila, 3).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 3).Value = reserVItem.Pasajeros.Cargo;
+                    hojaReservasVuelo.Cell(1, 3).Value = "Cargo";
+                    hojaReservasVuelo.Cell(1, 3).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 3).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 3).Style.Font.Bold = true;
 
-                    hojaReservasVuelo.Cell(fila, 4).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 4).Value = reserVItem.Pasajeros.PrimerApellido + " " + reserVItem.Pasajeros.SegundoApellido + ", " + reserVItem.Pasajeros.Nombres;
+                    hojaReservasVuelo.Cell(1, 4).Value = "Nombre del Pasajero";
+                    hojaReservasVuelo.Cell(1, 4).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 4).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 4).Style.Font.Bold = true;
 
-                    hojaReservasVuelo.Cell(fila, 5).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 5).Value = reserVItem.Asientos.Descripcion;
+                    hojaReservasVuelo.Cell(1, 5).Value = "Asiento";
+                    hojaReservasVuelo.Cell(1, 5).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 5).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 5).Style.Font.Bold = true;
 
-                    hojaReservasVuelo.Cell(fila, 6).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 6).Value = reserVItem.Tramos.FechaHoraSalida;
+                    hojaReservasVuelo.Cell(1, 6).Value = "Fecha y Hora de Salida";
+                    hojaReservasVuelo.Cell(1, 6).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 6).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 6).Style.Font.Bold = true;
 
-                    hojaReservasVuelo.Cell(fila, 7).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 7).Value = reserVItem.Vuelos.NumeroVuelo;
+                    hojaReservasVuelo.Cell(1, 7).Value = "Número de Vuelo";
+                    hojaReservasVuelo.Cell(1, 7).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 7).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 7).Style.Font.Bold = true;
 
-                    hojaReservasVuelo.Cell(fila, 8).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 8).Value = reserVItem.Vuelos.Rutas1.Codigo+ "-" + reserVItem.Vuelos.Rutas.Codigo;
+                    hojaReservasVuelo.Cell(1, 8).Value = "Vuelo";
+                    hojaReservasVuelo.Cell(1, 8).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 8).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 8).Style.Font.Bold = true;
 
-                    hojaReservasVuelo.Cell(fila, 9).DataType = XLCellValues.Text;
-                    hojaReservasVuelo.Cell(fila, 9).Value = reserVItem.Tramos.Rutas1.Ciudad + "-" + reserVItem.Tramos.Rutas.Ciudad;   
-                   
-                    fila++;
-                    contadorReg++;
-                }
-            }
+                    hojaReservasVuelo.Cell(1, 9).Value = "Dirección";
+                    hojaReservasVuelo.Cell(1, 9).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 9).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 9).Style.Font.Bold = true;
 
-            //Finalizar archivo Excel
-            hojaReservasVuelo.Columns().AdjustToContents();
+                    using (var entity = new DAPEntities())
+                    {
+                        numeroVuelo = numeroVuelo == 0 ? null : numeroVuelo;
 
-            return workbook;
+                        var reservasvuelosBd = entity.ReservasVuelos.Where(r => r.ConfirmacionAsiento == true
+                        && (numeroVuelo == null || r.Vuelos.NumeroVuelo == numeroVuelo)
+                        && (fechaSalida == null || r.Vuelos.FechaHoraSalida == fechaSalida)
+                        ).ToList();
+
+                        var fila = 2;
+                        var contadorReg = 1;
+                        foreach (ReservasVuelos reserVItem in reservasvuelosBd.OrderBy(x => x.Pasajeros.PrimerApellido))
+                        {
+                            hojaReservasVuelo.Cell(fila, 1).DataType = XLCellValues.Number;
+                            hojaReservasVuelo.Cell(fila, 1).Value = contadorReg;
+
+                            hojaReservasVuelo.Cell(fila, 2).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 2).Value = reserVItem.Pasajeros.Rut;
+
+                            hojaReservasVuelo.Cell(fila, 3).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 3).Value = reserVItem.Pasajeros.Cargo;
+
+                            hojaReservasVuelo.Cell(fila, 4).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 4).Value = reserVItem.Pasajeros.PrimerApellido + " " + reserVItem.Pasajeros.SegundoApellido + ", " + reserVItem.Pasajeros.Nombres;
+
+                            hojaReservasVuelo.Cell(fila, 5).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 5).Value = reserVItem.Asientos.Descripcion;
+
+                            hojaReservasVuelo.Cell(fila, 6).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 6).Value = reserVItem.Tramos.FechaHoraSalida;
+
+                            hojaReservasVuelo.Cell(fila, 7).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 7).Value = reserVItem.Vuelos.NumeroVuelo;
+
+                            hojaReservasVuelo.Cell(fila, 8).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 8).Value = reserVItem.Vuelos.Rutas1.Codigo + "-" + reserVItem.Vuelos.Rutas.Codigo;
+
+                            hojaReservasVuelo.Cell(fila, 9).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 9).Value = reserVItem.Tramos.Rutas1.Ciudad + "-" + reserVItem.Tramos.Rutas.Ciudad;
+
+                            fila++;
+                            contadorReg++;
+                        }
+                    }
+
+                    //Finalizar archivo Excel
+                    hojaReservasVuelo.Columns().AdjustToContents();
+                }               
+
+                return workbook;
+            }            
         }
-             
+
+        public FileStreamResult ExportarExcelCancelado(int numeroVuelo, string fechaInicio, string fechaFin, long processToken)
+        {
+            try
+            {
+                MakeProcessTokenCookie(processToken);
+
+                var format = "dd-MM-yyyy HH:mm";
+                var fechaDateInicio = new DateTime();
+                var fechaDateFin = new DateTime();
+                             
+                fechaDateInicio = DateTime.ParseExact(fechaInicio, format, CultureInfo.InvariantCulture);
+                fechaDateFin = DateTime.ParseExact(fechaFin, format, CultureInfo.InvariantCulture);               
+
+                var libro = ExportarArchivoExcelCancelado(numeroVuelo, fechaDateInicio, fechaDateFin);
+                var memoryStream = new MemoryStream();
+                libro.SaveAs(memoryStream);
+                libro.Dispose();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+                memoryStream.Flush();
+                memoryStream.Position = 0;
+
+                var nombreArchivo = string.Format("SMA_ReservasVuelosCancelados_{0}.xlsx", "Collahuasi");
+                return File(memoryStream, "ReservasVuelos", nombreArchivo);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private XLWorkbook ExportarArchivoExcelCancelado(int numeroVuelo, DateTime fechaInicio, DateTime fechaFin)
+        {
+            using (var workbook = new XLWorkbook(XLEventTracking.Disabled))
+            {
+                using (var hojaReservasVuelo = workbook.Worksheets.Add("Datos ReservasVuelos Cancelados"))
+                {
+                    //var hojaParam = workbook.Worksheets.Add("Parametros").Hide();
+                    //hojaParam.Columns().AdjustToContents();
+
+                    hojaReservasVuelo.Cell(1, 1).Value = "N°";
+                    hojaReservasVuelo.Cell(1, 1).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 1).Style.Font.Bold = true;
+
+                    hojaReservasVuelo.Cell(1, 2).Value = "RUT";
+                    hojaReservasVuelo.Cell(1, 2).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 2).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 2).Style.Font.Bold = true;
+
+                    hojaReservasVuelo.Cell(1, 3).Value = "Cargo";
+                    hojaReservasVuelo.Cell(1, 3).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 3).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 3).Style.Font.Bold = true;
+
+                    hojaReservasVuelo.Cell(1, 4).Value = "Nombre del Pasajero";
+                    hojaReservasVuelo.Cell(1, 4).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 4).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 4).Style.Font.Bold = true;
+
+                    hojaReservasVuelo.Cell(1, 5).Value = "Asiento";
+                    hojaReservasVuelo.Cell(1, 5).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 5).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 5).Style.Font.Bold = true;
+
+                    hojaReservasVuelo.Cell(1, 6).Value = "Fecha y Hora de Salida";
+                    hojaReservasVuelo.Cell(1, 6).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 6).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 6).Style.Font.Bold = true;
+
+                    hojaReservasVuelo.Cell(1, 7).Value = "Fecha y Hora de Cancelación";
+                    hojaReservasVuelo.Cell(1, 7).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 7).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 7).Style.Font.Bold = true;
+
+                    hojaReservasVuelo.Cell(1, 8).Value = "Número de Vuelo";
+                    hojaReservasVuelo.Cell(1, 8).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 8).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 8).Style.Font.Bold = true;
+
+                    hojaReservasVuelo.Cell(1, 9).Value = "Vuelo";
+                    hojaReservasVuelo.Cell(1, 9).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 9).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 9).Style.Font.Bold = true;
+
+                    hojaReservasVuelo.Cell(1, 10).Value = "Dirección";
+                    hojaReservasVuelo.Cell(1, 10).Style.Font.FontColor = XLColor.White;
+                    hojaReservasVuelo.Cell(1, 10).Style.Fill.BackgroundColor = XLColor.Blue;
+                    hojaReservasVuelo.Cell(1, 10).Style.Font.Bold = true;
+
+                    using (var entity = new DAPEntities())
+                    {
+                        //Generar query
+                        var reservasvuelosBd = entity.ReservasVuelos.Where(r => r.ConfirmacionAsiento == false
+                        && r.Vuelos.NumeroVuelo == numeroVuelo
+                        && r.Vuelos.FechaHoraSalida >= fechaInicio
+                        && r.Vuelos.FechaHoraSalida <= fechaFin
+                        ).ToList();
+
+                        var fila = 2;
+                        var contadorReg = 1;
+                        foreach (ReservasVuelos reserVItem in reservasvuelosBd.OrderBy(x => x.Pasajeros.PrimerApellido).ThenBy(y => y.Vuelos.FechaHoraSalida))
+                        {
+                            hojaReservasVuelo.Cell(fila, 1).DataType = XLCellValues.Number;
+                            hojaReservasVuelo.Cell(fila, 1).Value = contadorReg;
+
+                            hojaReservasVuelo.Cell(fila, 2).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 2).Value = reserVItem.Pasajeros.Rut;
+
+                            hojaReservasVuelo.Cell(fila, 3).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 3).Value = reserVItem.Pasajeros.Cargo;
+
+                            hojaReservasVuelo.Cell(fila, 4).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 4).Value = reserVItem.Pasajeros.PrimerApellido + " " + reserVItem.Pasajeros.SegundoApellido + ", " + reserVItem.Pasajeros.Nombres;
+
+                            hojaReservasVuelo.Cell(fila, 5).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 5).Value = reserVItem.Asientos.Descripcion;
+
+                            hojaReservasVuelo.Cell(fila, 6).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 6).Value = reserVItem.Tramos.FechaHoraSalida;
+
+                            hojaReservasVuelo.Cell(fila, 7).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 7).Value = reserVItem.FechaHoraCancelacion;
+
+                            hojaReservasVuelo.Cell(fila, 8).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 8).Value = reserVItem.Vuelos.NumeroVuelo;
+
+                            hojaReservasVuelo.Cell(fila, 9).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 9).Value = reserVItem.Vuelos.Rutas1.Codigo + "-" + reserVItem.Vuelos.Rutas.Codigo;
+
+                            hojaReservasVuelo.Cell(fila, 10).DataType = XLCellValues.Text;
+                            hojaReservasVuelo.Cell(fila, 10).Value = reserVItem.Tramos.Rutas1.Ciudad + "-" + reserVItem.Tramos.Rutas.Ciudad;
+
+                            fila++;
+                            contadorReg++;
+                        }
+                    }
+                    //Finalizar archivo Excel
+                    hojaReservasVuelo.Columns().AdjustToContents();
+                } 
+                
+
+                return workbook;
+            }            
+        }
+
+        public ActionResult DescargarPlanillaCancelado()
+        {
+            ViewBag.processToken = Convert.ToInt64(DateTime.Now.Hour.ToString() + DateTime.Now.Minute + DateTime.Now.Second +
+                                       DateTime.Now.Millisecond);
+            return View(new ReservaVueloFiltroPlanillaVm { FechaHoraInicio = DateTime.Now.AddMonths(-1),
+            FechaHoraFin = DateTime.Now.AddMonths(1)});
+        }
 
         protected override void Dispose(bool disposing)
         {
@@ -378,6 +547,15 @@ namespace MineralAirways.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void MakeProcessTokenCookie(long processToken)
+        {
+            var cookie = new HttpCookie("processToken")
+            {
+                Value = processToken.ToString()
+            };
+            ControllerContext.HttpContext.Response.Cookies.Add(cookie);
         }
     }
 }

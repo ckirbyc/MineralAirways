@@ -66,12 +66,12 @@
             $("input").focus(function () {
                 $btn.button('reset');
             });
+
             var vuelo = $("#NumeroVuelo").val();
             var fecha = $("#FechaHoraSalida").val();
-            window.location = '@Url.Action("ExportarExcel", "ReservasVuelos")?numeroVuelo=' + vuelo + '&fechaSalida=' + fecha;
-            setTimeout(function () {
-                $btn.button('reset');
-            }, 5000);
+
+            monitorDescargaExcel();
+            window.location = '@Url.Action("ExportarExcel", "ReservasVuelos")?numeroVuelo=' + vuelo + '&fechaSalida=' + fecha + '&processToken=' + @ViewBag.processToken;            
         });
 
         $("#btnLimpiar").off('click').click(function () {
@@ -79,4 +79,19 @@
             $("#FechaHoraSalida").val('');
         });
     });
+</script>
+<script>
+    function monitorDescargaExcel() {
+        $("#loading-modal").show();
+        var interval = setInterval(function () {
+            var cookieValue = $.cookie('processToken');
+            if (cookieValue == '@ViewBag.processToken') {
+                $("#loading-modal").hide();
+                var $btn = $("#btnDescargar");
+                $btn.button('reset');
+                clearInterval(interval);
+                $.removeCookie('processToken', { path: '/' });
+            }
+        }, 1000);
+    }
 </script>

@@ -8,17 +8,25 @@
 <br />
 <div class="row">
     @*<div class="col-md-10">
-        <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("Create", "ReservasVuelos")">
-            <span class="glyphicon glyphicon-plus"></span>
-            Crear Reserva Vuelo
-        </a>
-    </div>*@
-    <div class="col-md-2">    
-        <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("DescargarPlanilla", "ReservasVuelos")" onclick="$('#loading-modal').show();">
-            <span class="glyphicon glyphicon-file"></span>
-            Descargar Manifiesto
-        </a>                
-    </div>        
+            <a class="btn btn-primary pull-right btn-sm" href="@Url.Action("Create", "ReservasVuelos")">
+                <span class="glyphicon glyphicon-plus"></span>
+                Crear Reserva Vuelo
+            </a>
+        </div>*@
+    <div class="col-md-12">
+        <div class="col-md-3">
+            <a class="btn btn-primary pull-left btn-sm" href="@Url.Action("DescargarPlanilla", "ReservasVuelos")" onclick="$('#loading-modal').show();">
+                <span class="glyphicon glyphicon-file"></span>
+                Descargar Manifiesto
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-primary pull-left btn-sm" href="@Url.Action("DescargarPlanillaCancelado", "ReservasVuelos")" onclick="$('#loading-modal').show();">
+                <span class="glyphicon glyphicon-file"></span>
+                Descargar Manifiesto Cancelados
+            </a>
+        </div>
+    </div>    
 </div>
 <br />
 <div class="row">
@@ -26,7 +34,7 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayName("Nombre del Pasajero")
+                    @Html.DisplayName("Nombre Pasajero")
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Pasajeros.Rut)
@@ -35,16 +43,16 @@
                     @Html.DisplayName("Asiento")                    
                 </th>
                 <th>
-                    @Html.DisplayName("Número del Vuelo")
+                    @Html.DisplayName("Número Vuelo")
                 </th>
                 <th>
-                    @Html.DisplayName("Fecha y Hora de Salida")
+                    @Html.DisplayName("Fecha Hora Salida")
                 </th>
                 <th>
-                    @Html.DisplayName("Fecha y Hora de Confirmación")
+                    @Html.DisplayName("Fecha Hora Confirmación")
                 </th>
                 <th>
-                    @Html.DisplayName("Fecha y Hora de Cancelación")
+                    @Html.DisplayName("Fecha Hora Cancelación")
                 </th>
                 <th></th>
             </tr>
@@ -52,7 +60,7 @@
         <tfoot>
             <tr>
                 <th>
-                    @Html.DisplayName("Nombre del Pasajero")
+                    @Html.DisplayName("Nombre Pasajero")
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Pasajeros.Rut)
@@ -61,16 +69,16 @@
                     @Html.DisplayName("Asiento")
                 </th>
                 <th>
-                    @Html.DisplayName("Número del Vuelo")
+                    @Html.DisplayName("Número Vuelo")
                 </th>
                 <th>
-                    @Html.DisplayName("Fecha y Hora de Salida")
+                    @Html.DisplayName("Fecha Hora Salida")
                 </th>
                 <th>
-                    @Html.DisplayName("Fecha y Hora de Confirmación")
+                    @Html.DisplayName("Fecha Hora Confirmación")
                 </th>
                 <th>
-                    @Html.DisplayName("Fecha y Hora de Cancelación")
+                    @Html.DisplayName("Fecha Hora Cancelación")
                 </th>
                 <th></th>
             </tr>

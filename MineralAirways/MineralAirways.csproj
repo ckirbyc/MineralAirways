@@ -523,6 +523,8 @@
     <Content Include="Scripts\images\ui-icons_777777_256x240.png" />
     <Content Include="Scripts\images\ui-icons_cc0000_256x240.png" />
     <Content Include="Scripts\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Scripts\jquery.cookie.min.js" />
     <Content Include="Scripts\jquery.dataTables.min.js" />
     <Content Include="Scripts\jquery.js" />
     <Content Include="Scripts\jquery.min.js" />
@@ -684,6 +686,7 @@
     <Content Include="Views\Account\AccountError.cshtml" />
     <Content Include="Views\PerfilPasajeros\EditPerfil.cshtml" />
     <Content Include="Views\HomeLogin\CambiarVuelo.cshtml" />
+    <Content Include="Views\ReservasVuelos\DescargarPlanillaCancelado.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
